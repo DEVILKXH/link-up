@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/style.css">
+  <title>连连看</title>
+</head>
+<body>
+
+</body>
+<script>
+    let appId = 'wxd21cf43aa834218f'
+    let redirectUri = encodeURIComponent("http://www.lrans.xin/html/home.html")
+    window.location = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirectUri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`
+</script>
+</html>

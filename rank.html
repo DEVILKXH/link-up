@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>连连看</title>
+  <link rel="stylesheet" href="css/index.css">
+  <style>
+      ul{padding: 0; margin: 0; display: flex; flex-direction: row; text-decoration: none; list-style: none; font-size: 1.2rem;}
+      ul li {text-align: center; padding: 0.54rem; height: 2rem; line-height: 2rem; color: #fff}
+      ul .rank{width: 3rem;} 
+      ul .name{flex-grow: 1; text-align: left;} 
+      ul .score{width: 5rem; color: orange} 
+      .img-user {width: 2rem; height: 2rem; margin-right: 1rem; border-radius: 2rem; vertical-align:middle}
+      .name-info {vertical-align:middle}
+  </style>
+</head>
+<body>
+  <div class="bg-contents">
+    
+  </div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="js/alert.js"></script>
+<script src="js/const.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/api.js"></script>
+<script src="js/user.js"></script>
+<script>
+  $(function () {
+      let api = new Api()
+      api.post({
+          url: '/score/rank',
+          success: response => {
+              for (let i = 0; i < response.result.length; i ++) {
+                  let result =  response.result[i]
+                  let html = `<ul> <li class='rank'>${i + 1}</li> <li class='name'> <img src="bg/user-32px.png" class="img-user" /> <span class='name-info'>${result.userName}</span> </li> <li class="score">${result.score}</li> </ul>`
+                  $(".bg-contents").append(html)
+              }
+          }
+      })
+  })
+</script>
+</html>

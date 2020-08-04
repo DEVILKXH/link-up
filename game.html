@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/style.css">
+  <title>连连看</title>
+  <style>
+      .dialog-content{
+          display: flex;
+          flex-direction: row;
+      }
+      .dialog-content > div {flex-grow: 1; text-align: center;}
+      .ui__content_body {color: #000}.heading{display: flex; flex-direction: row; height: 2em;}
+      .count-down {position: absolute; width: 100%; height: 100%; top: 0; left: 0}
+      .count-down .content {position: absolute; left: 0; right: 0; top: 0; bottom: 0; margin: auto;  height: 100px; line-height: 100px; text-align: center; font-size: 8rem; color: orange; animation: changeSize 2s linear 0s infinite alternate; -moz-animation: changeSize 2s linear 0s infinite alternate;	/* Firefox */ -webkit-animation: changeSize 2s linear 0s infinite alternate;	/* Safari 和 Chrome */ -o-animation: changeSize 2s linear 0s infinite alternate;	/* Opera */}
+      .count-content, .count-content .frozen {position: relative; border-radius: 1rem; padding-right: 0.2rem;}
+      .count-content {background: #dc9c54; border: 2px solid #f4d3b9; }
+      /* .count-content .frozen{position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: url(bg/frozen.jpg); opacity: 0.5;} */
+      .count-content img {display: inline-block; vertical-align: middle; height: 1.2rem; transform: rotate(45deg); -ms-transform:rotate(45deg); /* IE 9 */ -webkit-transform:rotate(45deg); /* Safari and Chrome */}
+      .count-content .time,.count-content span {display: inline-block; vertical-align: middle; font-size: 1rem; height: 1rem; line-height: 1rem;}
+      .heading .time {width: auto; font-size: 1.2rem}
+      .time-content {height: 1rem; overflow: hidden !important; flex-grow: 1;}
+      .time-body {height: 0.75rem; width: 96%; margin-left: 2%; background: #ccc; border-radius: 0.3rem; background: #1a1f56; box-shadow: inset 0 1px 2px rgba(0,0,0,.1); overflow: hidden !important;}
+      .time-panel {height: 0.75rem; width: 100%; border-radius: 0.3rem; background-image: linear-gradient(to right, #f6a214 , #ffbc05);}
+      .continue-click {width: 4rem; color: #d9534f; font-size: 1.2rem;}
+      .prop {display: flex; flex-direction: row;}
+      .prop > div{text-align: center; width: 25%;}
+      .prop img {height: 3rem;}
+      .prop img + img {margin-left: 1rem}
+      /* .grid-item{border: 1px solid #fff !important;} */
+      
+      .frozen-move {display: -none; width: 3rem; height: 3rem; position: absolute; left: 0; top: 0;}
+      .frozen-body {width: 0.5rem; height: 4rem; border-radius: 3rem; margin: 0 auto; background:linear-gradient(to top, transparent , #fff);  box-shadow: 0 0 0.8rem #fff; /*transform: rotate(-16deg); -webkit-transform: rotate(-16deg); -ms-transform: rotate(-16deg)*/}
+      @keyframes changeSize{
+        0% {
+            transform:scale(0.8);
+            -ms-transform:scale(0.8); /* IE 9 */
+            -webkit-transform:scale(0.8); /* Safari and Chrome */
+        }
+        50% {
+            transform:scale(1);
+            -ms-transform:scale(1); /* IE 9 */
+            -webkit-transform:scale(1); /* Safari and Chrome */
+        }
+        100% {
+            transform:scale(0.8);
+            -ms-transform:scale(0.8); /* IE 9 */
+            -webkit-transform:scale(0.8); /* Safari and Chrome */
+        }
+    }
+  </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading">
+            <div class="count-content">
+                <img src="bg/hourglass.png"/>
+                <p class="time"></p>
+                <span>s</span>
+                <!-- <div class="frozen"></div> -->
+            </div>
+            <div class="time-content">
+                <div class="time-body">
+                    <div class="time-panel"></div>
+                </div>
+            </div>
+            <div class="continue-click">10连击</div>
+        </div>
+        <div class="grid-container"></div>
+        <div class="footer prop">
+            <div>
+                <img src="bg/tip.png" id="help" />
+            </div>
+            <div>
+                <img src="bg/refresh.png" id="refresh"/>
+            </div>
+            <div>
+                <img src="bg/boom.png" id="boom" />
+            </div>
+            <div>
+                <img src="bg/hourglass.png" id="frozen"/>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="frozen-move">
+        <div class="frozen-body"></div>
+    </div>
+    <div class="count-down">
+        <div class="content">1</div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <script src="js/alert.js?v=1324"></script>
+    <script src="js/config.js?v=1324"></script>
+    <script src="js/point.js?v=1314"></script>
+    <script src="js/const.js?v=1324"></script>
+    <script src="js/storage.js?v=1324"></script>
+    <script src="js/api.js?v=1324"></script>
+    <script src="js/util.js?v=1314"></script>
+    <script src="js/user.js?v=1324"></script>
+    <script src="js/view.js?v=1314"></script>
+    <script src="js/game.js?v=1314"></script>
+    <script src="js/event.js?v=1324"></script>
+    <script src="js/main.js?v=1324"></script>
+</body>
+<script>
+    var api = new Api()
+    api.post({
+        url: '/user/sign',
+        data: window.location.href,
+        success: function (response) {
+            wx.config({
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                appId: 'wxd21cf43aa834218f', // 必填，公众号的唯一标识
+                timestamp: response.result.timestamp, // 必填，生成签名的时间戳
+                nonceStr: response.result.noncestr, // 必填，生成签名的随机串
+                signature: response.result.sign,// 必填，签名
+                jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'] // 必填，需要使用的JS接口列表
+            });
+
+            wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+                wx.updateAppMessageShareData({ 
+                    title: '一起连连看', // 分享标题
+                    desc: '快来一起连连看吧', // 分享描述
+                    link: window.origin + '/html/index.html', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: '', // 分享图标
+                    success: function () {
+                        console.log('分享成功')
+                        config.maxHelpCount ++
+                    }
+                })
+                wx.updateTimelineShareData({ 
+                    title: '一起连连看', // 分享标题
+                    link: window.origin + '/html/index.html', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: '', // 分享图标
+                    success: function () {
+                        // 设置成功
+                        config.maxHelpCount ++
+                    }
+                })
+            });
+
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>连连看</title>
+  <link rel="stylesheet" href="css/index.css">
+  <style>
+    .dialog-content{
+        display: flex;
+        flex-direction: row;
+    }
+    .dialog-content > div {flex-grow: 1; text-align: center;}
+    .ui__content_body {color: #000}
+</style>
+</head>
+<body>
+  <div class="bg-contents">
+    <img src="bg/timg.png" class='start scale'/>
+     <img src="bg/view-rank.png" class='rank-content scale'/>
+    <!-- <div class="rank-content scale" style="text-align: center; font-size: 4rem; color: white;">查看排行榜</div> -->
+    
+  </div>
+</body>
+<script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/alert.js"></script>
+<script src="js/util.js"></script>
+<script src="js/const.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/api.js"></script>
+<script src="js/user.js"></script>
+<script>
+  let user = new User()
+  let storage = new MyStorage()
+  // setOpenId()
+  getOpenId()
+  $('.start').click(user.play)
+  $('.rank-content').click(function () {
+    window.location = '/html/rank.html'
+  })
+
+
+  function getOpenId() {
+    if (undefined == storage.getItem(global.OPENID) || null == storage.getItem(global.OPENID)) {
+      var code = getParamByUrl('code')
+      if(code != '') {
+      user.wechatLogin(code)
+      }
+      // window.location.href = "http://localhost:8080/html/home.html?code=" + code
+    } else {
+      //window.location = '/html/index.html'
+    }
+  }
+
+  var api = new Api()
+  api.post({
+      url: '/user/sign',
+      data: window.location.href,
+      success: function (response) {
+          wx.config({
+              debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+              appId: 'wxd21cf43aa834218f', // 必填，公众号的唯一标识
+              timestamp: response.result.timestamp, // 必填，生成签名的时间戳
+              nonceStr: response.result.noncestr, // 必填，生成签名的随机串
+              signature: response.result.sign,// 必填，签名
+              jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'] // 必填，需要使用的JS接口列表
+          });
+
+          wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+              wx.updateAppMessageShareData({ 
+                  title: '一起连连看', // 分享标题
+                  desc: '快来一起连连看吧', // 分享描述
+                  link: window.origin + '/html/index.html', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: '', // 分享图标
+                  success: function () {
+                      console.log('分享成功')
+                      config.maxHelpCount ++
+                  }
+              })
+              wx.updateTimelineShareData({ 
+                  title: '一起连连看', // 分享标题
+                  link: window.origin + '/html/index.html', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: '', // 分享图标
+                  success: function () {
+                      // 设置成功
+                      config.maxHelpCount ++
+                  }
+              })
+          });
+
+      }
+  })
+</script>
+</html>
