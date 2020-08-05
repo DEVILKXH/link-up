@@ -91,9 +91,9 @@
 
     let openId = getParamByUrl('openId')
     let shareOpenId = storage.getItem(global.OPENID)
-    if (openId == shareOpenId) {
-      return ;
-    }
+    // if (openId == shareOpenId) {
+    //   return ;
+    // }
 
     api.post({
       url: '/share/info/save',
