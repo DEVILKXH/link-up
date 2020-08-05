@@ -7,9 +7,12 @@ let User = (function () {
     }
 
     User.prototype = {
-        wechatLogin: (code) => {
+        wechatLogin: (code,fn) => {
             api.wechatLogin(code, function (response) {
                 storage.setItem("OPEN_ID", response.result)
+                if (fn) {
+                    fn();
+                }
             })
         },
         play: (type) => {

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>连连看</title>
+  <link rel="stylesheet" href="css/index.css">
+  <style>
+    .dialog-content{
+        display: flex;
+        flex-direction: row;
+    }
+    .dialog-content > div {flex-grow: 1; text-align: center;}
+    .ui__content_body {color: #000}
+    .bg-contents {display: flex; flex-direction: column;}
+    .bg-contents .header{height: 8rem; padding: 1rem 0; text-align: center; }
+    .bg-contents .header img {height: 6rem; border-radius: 6rem; margin-top: 1rem;}
+    .bg-contents .body {flex-grow: 1; overflow: auto;}
+    .body ul {list-style: none; display: flex; padding: 1rem 0; margin: 0;}
+    .body ul li {height: 2rem; text-align: center; line-height: 2rem;}
+    .body ul li.index, .body ul li.img {width: 4rem;}
+    .body ul li.date {width: 8rem;}
+    .body ul li.name {text-align: left; flex-grow: 1;}
+    .body ul li img {height: 2rem; border-radius: 2rem;}
+</style>
+</head>
+<body>
+  <div class="bg-contents">
+    <div class="header">
+      <img src="" class='header-img'/>
+    </div>
+    <div class="body">
+      
+    </div>
+  </div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="js/alert.js"></script>
+<script src="js/util.js"></script>
+<script src="js/const.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/api.js"></script>
+<script src="js/user.js"></script>
+<script>
+  let user = new User()
+  let storage = new MyStorage()
+  let api = new Api()
+  getOpenId()
+  logo()
+  init()
+  
+
+  function getOpenId() {
+    if (undefined == storage.getItem(global.OPENID) || null == storage.getItem(global.OPENID)) {
+      var code = getParamByUrl('code')
+      if(code != '') {
+        user.wechatLogin(code,save)
+      }
+    }
+  }
+
+  function init() {
+    let openId = getParamByUrl('openId')
+    api.post({
+      url: '/share/info/getShareInfo',
+      data: openId,
+      success: function (res) {
+        for (let i = 0; i < res.result.length; i ++) {
+          let html = `<ul> <li class='index'>${i + 1}</li> <li class='img'><img src="${res.result[i].userLogo}" /></li> <li class='name'>${res.result[i].userName}</li> <li class='date'>${res.result[i].shareDate}</li> </ul>`
+          $(".body").append(html)
+        }
+      }
+    })
+  }
+
+  function logo() {
+    let openId = getParamByUrl('openId')
+
+    api.post({
+      url: '/user/getByOpenId',
+      data: openId,
+      success: function (res) {
+        $(".header-img").attr('src', res.result.userLogo)
+      }
+    })
+  }
+
+  function save() {
+
+    let openId = getParamByUrl('openId')
+    let shareOpenId = storage.getItem(global.OPENID)
+    if (openId == shareOpenId) {
+      return ;
+    }
+
+    api.post({
+      url: '/share/info/save',
+      data: JSON.stringify({openId: openId, shareOpenId: shareOpenId}),
+      success: function (res) {
+        alert({content: '<div style="text-align: center" >'+ res.result +'</div>'}).then(() => {
+          init()
+        })
+      }
+    })
+  }
+</script>
+</html>
