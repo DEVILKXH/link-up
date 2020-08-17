@@ -1,9 +1,6 @@
 var Game = (function(){
     var continueClick = 0
     var clickTime = 0
-
-    var ROW = config.row + 2
-    var COL = config.col + 2
     
     var refreshCount = 0
     var helpCount = 0
@@ -15,14 +12,20 @@ var Game = (function(){
     var api = new Api()
     var storage = new MyStorage()
     var currentPoint = storage.getItem(global.CURRENT_POINT)
-    var level, itemCount, data
     if (undefined != currentPoint) {
-        level = config.levelPoint[currentPoint - 1]
-        itemCount = level.repeat * level.type
-        data = {
-            time : level.time,
-            cell : [],
-        }
+        currentPoint = 1;   
+    }
+    let pointConfig = {
+        cell: ALLPOINTS.data[currentPoint - 1].cell,
+        type: ALLPOINTS.data[currentPoint - 1].type,
+        repeat: ALLPOINTS.data[currentPoint - 1].repeat,
+        times: ALLPOINTS.data[currentPoint - 1].times,
+        col: ALLPOINTS.data[currentPoint - 1].cell[0].length,
+        row: ALLPOINTS.data[currentPoint - 1].cell.length,
+        itemCount: ALLPOINTS.data[currentPoint - 1].itemCount
+    }
+    var data = {
+        cell: []
     }
     var win = false
     var frozen = false
@@ -38,7 +41,7 @@ var Game = (function(){
         },
 
         changeSetup: function () {
-            data.time = level.time;
+            data.time = pointConfig.times;
             this.initCell();
             this.fillCell();
             this.checkDeadlock();
@@ -120,11 +123,11 @@ var Game = (function(){
 
         update: function () {
             $(".time-body").width($(".time-body").width())
-            this._update()
-            this.startCountDown()
+            // this._update()
+            // this.startCountDown()
         },
         startCountDown: function () {
-            let totalTime = level.time
+            let totalTime = pointConfig.times
             var res = (data.time / totalTime * 100).toFixed(0) 
             if (res < 0) {
                 res = 0
@@ -159,9 +162,9 @@ var Game = (function(){
 
         initCell : function(){
             var index = -1;
-            for (var i = 0; i < ROW; i++){
+            for (var i = 0; i < pointConfig.row; i++){
                 data.cell[i] = [];
-                for (var j = 0; j < COL; j++){
+                for (var j = 0; j < pointConfig.col; j++){
                     index++;
                     data.cell[i][j] = {
                         val : null,
@@ -171,51 +174,35 @@ var Game = (function(){
             }
         },
         fillCell : function(){
-            let length = ALLPOINTS.data.length;
-            if (currentPoint <= length) {
-                let values = ALLPOINTS.data[currentPoint - 1].cell
-                let type = ALLPOINTS.data[currentPoint - 1].type
-                let repeat = ALLPOINTS.data[currentPoint - 1].repeat
-                for (var i = 0; i < type; i++){
-                    for (var j = 0; j < repeat; j++){
-                        while(true){
-                            var x = random(1, COL - 2);
-                            var y = random(1, ROW - 2);
-                            var item = data.cell[y][x];
-                            if  (values[y][x] == 1 && item.val === null){
-                                data.cell[y][x].val = i;
-                                break;
-                            }
+            for (var i = 0; i < pointConfig.type; i++){
+                for (var j = 0; j < pointConfig.repeat; j++){
+                    let index = 0;
+                    while(true){
+                        var x = random(1, pointConfig.col - 2);
+                        var y = random(1, pointConfig.row - 2);
+                        var item = data.cell[y][x];
+                        if  (pointConfig.cell[y][x] == 1 && item.val === null){
+                            data.cell[y][x].val = i;
+                            break;
                         }
+                        index ++;
+                        if(index > 100) {
+                            break;
+                        }
+
                     }
                 }
-                itemCount = ALLPOINTS.data[currentPoint - 1].itemCount
-                level = ALLPOINTS.data[currentPoint - 1]
-            } else {
-                for (var i = 0; i < level.type; i++){
-                    for (var j = 0; j < level.repeat; j++){
-                        while(true){
-                            var x = random(1, COL - 2);
-                            var y = random(1, ROW - 2);
-                            var item = data.cell[y][x];
-                            if (item.val === null){
-                                data.cell[y][x].val = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+            }            
         },
         indexToPos : function(index){
             return {
-                x : index % COL,
-                y : Math.floor(index / COL),
+                x : index % pointConfig.col,
+                y : Math.floor(index / pointConfig.col),
             }
         },
         posToIndex : function(obj){
             return (
-                obj.y * COL + obj.x
+                obj.y * pointConfig.col + obj.x
             );
         },
         removeItem: function (before,after) {
@@ -235,7 +222,7 @@ var Game = (function(){
             this.getItem(after).val = null;
             this.view.removeItem(before);
             this.view.removeItem(after);
-            itemCount -= 2;
+            pointConfig.itemCount -= 2;
             score += continueClick * 10
             score += 20
             this.checkWinning();
@@ -254,8 +241,8 @@ var Game = (function(){
         },
         getAround : function(index){
             return [
-                -COL,
-                COL,
+                -pointConfig.col,
+                pointConfig.col,
                 -1,
                 1
             ]
@@ -284,7 +271,7 @@ var Game = (function(){
             var max = Math.max.call(null,before,after);
             var called = function(dir){
                 var i = min;
-                var num = dir === 'x' ? COL : 1;
+                var num = dir === 'x' ? pointConfig.col : 1;
                 for (;i+=num; i<=max){
                     var current = _this.getItem(i);
                     if (current === _this.getItem(max)){
@@ -418,8 +405,8 @@ var Game = (function(){
             return (
                 pos.x < 0 ||
                 pos.y < 0 ||
-                pos.x > COL-1 ||
-                pos.y > ROW-1
+                pos.x > pointConfig.col-1 ||
+                pos.y > pointConfig.row-1
             );
         },
 
@@ -428,8 +415,8 @@ var Game = (function(){
             return (
                 pos.x === 0 ||
                 pos.y === 0 ||
-                pos.x === COL-1 ||
-                pos.y === ROW-1
+                pos.x === pointConfig.col-1 ||
+                pos.y === pointConfig.row-1
             );
         },
 
@@ -489,7 +476,7 @@ var Game = (function(){
             })
         },
         checkWinning: function () {
-            if (itemCount === 0) {
+            if (pointConfig.itemCount === 0) {
                 this.winning();
             } else {
                 this.checkDeadlock();
@@ -497,8 +484,7 @@ var Game = (function(){
         },
 
         checkDeadlock: function () {
-            log(1)
-            var count = level.type;
+            var count = pointConfig.type;
             var cell = reduceDimension(data.cell);
             var filter = function (i) {
                 return cell.filter(function (el) {
@@ -524,8 +510,8 @@ var Game = (function(){
 
         randomReset: function () {
             var _this = this;
-            var row = ROW
-            var col = COL
+            var row = pointConfig.row
+            var col = pointConfig.col
             var cell = (function () {
                 return reduceDimension(data.cell).filter(function (el) {
                     return el.val !== 0 && el.val !== null; 
