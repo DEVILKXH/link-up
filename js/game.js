@@ -12,8 +12,8 @@ var Game = (function(){
     var api = new Api()
     var storage = new MyStorage()
     var currentPoint = storage.getItem(global.CURRENT_POINT)
-    if (undefined != currentPoint) {
-        currentPoint = 1;   
+    if (undefined != currentPoint || null == currentPoint) {
+        currentPoint = 1;
     }
     let pointConfig = {
         cell: ALLPOINTS.data[currentPoint - 1].cell,
@@ -25,7 +25,8 @@ var Game = (function(){
         itemCount: ALLPOINTS.data[currentPoint - 1].itemCount
     }
     var data = {
-        cell: []
+        cell: [],
+        time: pointConfig.times
     }
     var win = false
     var frozen = false
@@ -123,8 +124,8 @@ var Game = (function(){
 
         update: function () {
             $(".time-body").width($(".time-body").width())
-            // this._update()
-            // this.startCountDown()
+            this._update()
+            this.startCountDown()
         },
         startCountDown: function () {
             let totalTime = pointConfig.times
