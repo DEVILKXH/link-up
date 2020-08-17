@@ -13,10 +13,11 @@ var View = (function(){
     var currentPoint = storage.getItem(global.CURRENT_POINT)
     var level, totalTime
     
-    if(undefined != currentPoint) {
-        level = config.levelPoint[currentPoint - 1]
-        totalTime = level.time
+    if(undefined == currentPoint) {
+        currentPoint = 1;
     }
+    level = ALLPOINTS.data[currentPoint - 1]
+    totalTime = level.time
 
     var View = function(){ };
 
@@ -124,11 +125,12 @@ var View = (function(){
                 url: '/point/getCurrentPoint',
                 data: JSON.stringify({openId: openId}),
                 success: response => {
-                    for (let i = 0; i < response.result + 1 && i < 40; i ++) {
+                    let len = ALLPOINTS.data.length
+                    for (let i = 0; i < response.result + 1 && i < len; i ++) {
                         let activeHtml = `<div class="point-block point-active" data-index="${i + 1}"> <div class="point-number">${i + 1}</div> </div>`
                         $(".point-list").append(activeHtml);
                     }
-                    for (let i = response.result + 1; i < 40; i ++) {
+                    for (let i = response.result + 1; i < len; i ++) {
                         let unActiveHtml = `<div class="point-block point-not-active"> <div class="point-bg"> <img src="bg/lock.png"> </div> </div>`
                         $(".point-list").append(unActiveHtml);
                     }
