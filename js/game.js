@@ -96,9 +96,9 @@ var Game = (function(){
 
         frozen: function () {
             frozen = true
-            $(".time-panel").stop()
+            $(".current-time").stop()
             var offset = $("#frozen").offset()
-            var offset2 = $(".count-content").offset()
+            var offset2 = $(".current-time").offset()
             var dot = offset.top * offset2.top + offset.left * offset2.left
             var det = offset.left * offset2.top + offset.top * offset2.left
             var angle = Math.floor(Math.atan2(det, dot) / Math.PI * 180) - 10
@@ -106,7 +106,7 @@ var Game = (function(){
             this.move()
         },
         move: function () {
-            var offset = $(".count-content").offset()
+            var offset = $(".current-time").offset()
             let that = this
             $(".frozen-move").animate({top: Math.floor(offset.top) + 'px', left: Math.floor(offset.left) + 'px'}, 1000, "linear", function () {
                 that.stop()
@@ -123,9 +123,9 @@ var Game = (function(){
         },
 
         update: function () {
-            $(".time-body").width($(".time-body").width())
-            // this._update()
-            // this.startCountDown()
+            // $(".time-body").width($(".time-body").width())
+            this._update()
+            this.startCountDown()
         },
         startCountDown: function () {
             let totalTime = pointConfig.times
@@ -133,8 +133,8 @@ var Game = (function(){
             if (res < 0) {
                 res = 0
             }
-            $(".time-panel").width(res + '%')
-            $(".time-panel").stop().animate({width: '0px'}, data.time * 1000)
+            // $(".current-time").width(res + '%')
+            $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
         },
         _update: function () {
             if (data.time == 0 || win || frozen) {
@@ -154,7 +154,6 @@ var Game = (function(){
                     continueClick = 0
                     clickTime = timestamp
                 }
-                this.view.updateTime(data.time, continueClick);
             }
             if (data.time === 0) {
                 this.over();
@@ -226,6 +225,7 @@ var Game = (function(){
             pointConfig.itemCount -= 2;
             score += continueClick * 10
             score += 20
+            this.view.updateScore(score)
             this.checkWinning();
         },
         isEmpty : function(obj){
