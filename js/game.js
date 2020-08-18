@@ -124,8 +124,8 @@ var Game = (function(){
 
         update: function () {
             $(".time-body").width($(".time-body").width())
-            this._update()
-            this.startCountDown()
+            // this._update()
+            // this.startCountDown()
         },
         startCountDown: function () {
             let totalTime = pointConfig.times

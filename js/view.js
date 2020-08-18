@@ -25,7 +25,7 @@ var View = (function(){
 
         init : function(g,data){
             game = g;
-            this.updateTime(data.time);
+            // this.updateTime(data.time);
             this.initGrid(data.cell);
         },
 

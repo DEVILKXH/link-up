@@ -8,12 +8,25 @@
   <link rel="stylesheet" href="css/style.css">
   <title>连连看</title>
   <style>
+      /* body {background: url(bg/game-bg.png); background-size: 100% 100%;} */
       .dialog-content{
           display: flex;
           flex-direction: row;
       }
+      .header{height: 8rem;}
+      .container .grid-container {flex-grow: 1;}
+      .time-score-pause {height: 5rem; display: flex; flex-direction: row; margin-top: 1rem;}
+      .time-score-pause img {height: 2rem;}
+      .time-score-pause .pause {width: 25%; text-align: center;}
+      .time-score-pause .time-score {width: 75%; margin-left: 1rem; position: relative;}
+      .time-score-pause .time-score .score {display: inline-block; background: url(/bg/score.png); margin-top: 1rem; border-radius: 2rem; padding: 0 1rem}
+      .time-score-pause .time-score .score img {height: 1rem;}
+      .time-score-pause .pause img {height: 4rem;}
+      .time-score-pause .time-score span  {display: inline-block; font-size: 1.2rem; line-height: 2rem; color: #fdf5d6; font-weight: bold;}
       .dialog-content > div {flex-grow: 1; text-align: center;}
       .ui__content_body {color: #000}.heading{display: flex; flex-direction: row; height: 2em;}
+      .current-point {text-align: center;}
+      .current-point img{height: 2rem;}
       .count-down {position: absolute; width: 100%; height: 100%; top: 0; left: 0}
       .count-down .content {position: absolute; left: 0; right: 0; top: 0; bottom: 0; margin: auto;  height: 100px; line-height: 100px; text-align: center; font-size: 8rem; color: orange; animation: changeSize 2s linear 0s infinite alternate; -moz-animation: changeSize 2s linear 0s infinite alternate;	/* Firefox */ -webkit-animation: changeSize 2s linear 0s infinite alternate;	/* Safari 和 Chrome */ -o-animation: changeSize 2s linear 0s infinite alternate;	/* Opera */}
       .count-content, .count-content .frozen {position: relative; border-radius: 1rem; padding-right: 0.2rem;}
@@ -21,24 +34,27 @@
       /* .count-content .frozen{position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: url(bg/frozen.jpg); opacity: 0.5;} */
       .count-content img {display: inline-block; vertical-align: middle; height: 1.2rem; transform: rotate(45deg); -ms-transform:rotate(45deg); /* IE 9 */ -webkit-transform:rotate(45deg); /* Safari and Chrome */}
       .count-content .time,.count-content span {display: inline-block; vertical-align: middle; font-size: 1rem; height: 1rem; line-height: 1rem;}
-      .heading .time {width: auto; font-size: 1.2rem}
+      
       .time-content {height: 1rem; overflow: hidden !important; flex-grow: 1;}
       .time-body {height: 0.75rem; width: 96%; margin-left: 2%; background: #ccc; border-radius: 0.3rem; background: #1a1f56; box-shadow: inset 0 1px 2px rgba(0,0,0,.1); overflow: hidden !important;}
       .time-panel {height: 0.75rem; width: 100%; border-radius: 0.3rem; background-image: linear-gradient(to right, #f6a214 , #ffbc05);}
       .continue-click {width: 4rem; color: #d9534f; font-size: 1.2rem;}
-      .prop {display: flex; flex-direction: row;}
+      .grid-container {background-image: url(bg/bg-content.png); background-size: 100% 100%; margin: 0 1rem 1rem;}
+      
+      .prop {display: flex; flex-direction: row; height: 4rem;}
       .prop > div{text-align: center; width: 25%;}
-      .prop img {height: 3rem;}
-      .prop img + img {margin-left: 1rem}
+      .prop img {height: 4rem;}
+      .prop img + img {margin-left: 0.5rem}
       /* .grid-item{border: 1px solid #fff !important;} */
       
       .frozen-move {display: -none; width: 3rem; height: 3rem; position: absolute; left: 0; top: 0;}
       .frozen-body {width: 0.5rem; height: 4rem; border-radius: 3rem; margin: 0 auto; background:linear-gradient(to top, transparent , #fff);  box-shadow: 0 0 0.8rem #fff; /*transform: rotate(-16deg); -webkit-transform: rotate(-16deg); -ms-transform: rotate(-16deg)*/}
       
       
-    .grid-cell {display: flex; flex-direction: row;}
-    .grid-item {flex-grow: 1;}
-    .grid-item-content img {width: 100%; height: 100%;}
+      .grid-cell {display: flex; flex-direction: row;}
+      .grid-item {flex-grow: 1;}
+      .grid-item-content img {width: 100%; height: 100%;}
+      
 
       @keyframes changeSize{
         0% {
@@ -62,21 +78,27 @@
 
 <body>
     <div class="container">
-        <div class="heading">
-            <div class="count-content">
-                <img src="bg/hourglass.png"/>
-                <p class="time"></p>
-                <span>s</span>
-                <!-- <div class="frozen"></div> -->
+        <div class="header">
+            <div class="current-point">
+                <img src="bg/1.png" />
             </div>
-            <div class="time-content">
-                <div class="time-body">
-                    <div class="time-panel"></div>
+            <div class="time-score-pause">
+                <div class="time-score">
+                    <img src="bg/time.png"/>
+                    <div class="score">
+                        <img src="bg/score-text.png"/>
+                        <span>18762</span>
+                    </div>
+                </div>
+                <div class="pause">
+                    <img src="bg/pause.png"/>
                 </div>
             </div>
-            <div class="continue-click">10连击</div>
+            <div class="continue-click"></div>
         </div>
-        <div class="grid-container"></div>
+        <div class="grid-container">
+
+        </div>
         <div class="footer prop">
             <div>
                 <img src="bg/tip.png" id="help" />
