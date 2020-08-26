@@ -29,9 +29,13 @@ var View = (function(){
             this.initGrid(data.cell);
         },
 
-        updateTime: function (time, continueClick = 0) {
+        updateScore: function (score) {
+            $(".current-score").text(score);
+        },
+
+        updateTime: function (time, continueClick) {
             timeDom.innerHTML = time;
-            if (continueClick != 0) {
+            if (continueClick != undefined) {
                 clickDom.innerHTML = continueClick + '连击'
             } else {
                 clickDom.innerHTML = ''
