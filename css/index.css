@@ -7,22 +7,21 @@
     background: url(../bg/bg.jpg);
     background-size: 100% 100%;
 }
-.bg-contents .start {
+.bg-contents .start,
+.bg-contents .rank-content {
     position: absolute;
     width: 100%;
-    top: 25%;
+    height: 6rem;
     left: 0;
     right: 0;
     margin: auto;
 }
+.bg-contents .start {
+    top: 20%;
+}
 
 .bg-contents .rank-content {
-    position: absolute;
-    width: 100%;
-    bottom: 25%;
-    left: 0;
-    right: 0;
-    margin: auto;
+    bottom: 20%;
 }
 
 .bg-contents .scale {
@@ -57,9 +56,7 @@
     text-align: center;
 }
 .point-list .point-not-active .point-bg img {
-    width: 3rem;
-    height: 3rem;
-    margin-top: 0.5rem;
+    width: 100%;
 }
 
 .point-list .point-block .point-number {
