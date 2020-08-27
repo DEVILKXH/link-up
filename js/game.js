@@ -112,6 +112,22 @@ var Game = (function(){
                 that.stop()
             })
         },
+        
+        pause: function () {
+            $("#pause").hide();
+            $("#start").show();
+            $(".current-time").stop()
+            frozen = true
+        },
+
+        
+        startGame: function () {
+            $("#pause").show();
+            $("#start").hide();
+            frozen = false
+            $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
+        },
+
 
         stop: function () {
             $(".frozen-move").fadeOut().removeClass("active")
@@ -123,7 +139,6 @@ var Game = (function(){
         },
 
         update: function () {
-            // $(".time-body").width($(".time-body").width())
             this._update()
             this.startCountDown()
         },

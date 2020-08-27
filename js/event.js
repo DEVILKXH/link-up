@@ -49,6 +49,16 @@ function event(game){
     var frozenBtn = $$('#frozen')[0];
     on(frozenBtn, 'click', function (e) {
         game.frozen();
-    });
+    })
 
+    var pause = $$("#pause")[0]
+    on(pause, 'click', function (e) {
+        game.pause()
+    })
+
+    
+    var start = $$("#start")[0]
+    on(start, 'click', function (e) {
+        game.startGame()
+    })
 }
