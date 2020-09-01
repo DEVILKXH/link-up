@@ -36,7 +36,7 @@
           success: response => {
               for (let i = 0; i < response.result.length; i ++) {
                   let result =  response.result[i]
-                  let html = `<ul> <li class='rank'>${i + 1}</li> <li class='name'> <img src="bg/user-32px.png" class="img-user" /> <span class='name-info'>${result.userName}</span> </li> <li class="score">${result.score}</li> </ul>`
+                  let html = `<ul> <li class='rank'>${i + 1}</li> <li class='name'> <img src="${result.userLogo}" class="img-user" /> <span class='name-info'>${result.userName}</span> </li> <li class="score">${result.score}</li> </ul>`
                   $(".bg-contents").append(html)
               }
           }
