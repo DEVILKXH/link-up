@@ -10,18 +10,17 @@
 .bg-contents .start,
 .bg-contents .rank-content {
     position: absolute;
-    width: 100%;
-    height: 6rem;
+    width: 60%;
     left: 0;
     right: 0;
     margin: auto;
 }
 .bg-contents .start {
-    top: 20%;
+    top: 25%;
 }
 
 .bg-contents .rank-content {
-    bottom: 20%;
+    bottom: 25%;
 }
 
 .bg-contents .scale {

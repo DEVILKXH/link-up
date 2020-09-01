@@ -12,7 +12,7 @@ var Game = (function(){
     var api = new Api()
     var storage = new MyStorage()
     var currentPoint = storage.getItem(global.CURRENT_POINT)
-    if (undefined != currentPoint || null == currentPoint) {
+    if (undefined == currentPoint || null == currentPoint) {
         currentPoint = 1;
     }
     let pointConfig = {
@@ -31,6 +31,11 @@ var Game = (function(){
     var win = false
     var frozen = false
     var score = 0
+    var active = {
+        t: true,
+        h: true,
+        n: true,
+    }
     var Game = function(){
         
     };
@@ -169,6 +174,21 @@ var Game = (function(){
                     continueClick = 0
                     clickTime = timestamp
                 }
+            }
+            let r = data.time / pointConfig.times;
+            if (active.n && r < 0.9) {
+                $(".time-night").attr("src", "bg/start-active.png")
+                active.n = false
+            }
+            
+            if (active.h && r < 0.6) {
+                $(".time-half").attr("src", "bg/start-active.png")
+                active.h = false
+            }
+            
+            if (active.t && r < 0.35) {
+                $(".time-ten").attr("src", "bg/start-active.png")
+                active.t = false
             }
             if (data.time === 0) {
                 this.over();

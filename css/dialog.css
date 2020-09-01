@@ -1,0 +1,77 @@
+.main-dialog {
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7)
+}
+.dialog-body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 90%;
+    height: 24rem;
+    margin: auto;
+    background-size: 100%;
+    /* background: #fff; */
+    /* border-radius: 1rem; */
+}
+
+.dialog-bg, .dialog-bg img, 
+.dialog-close img{
+    width: 100%;
+    height: 100%;
+}
+.dialog-bg {
+    position: absolute;
+    z-index: -1;
+}
+.dialog-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 3rem;
+    height: 3rem;
+}
+.dialog-result {
+    height: 4rem;
+    text-align: center;
+    margin-top: 3rem;
+}
+.dialog-result img, .dialog-socre img, .dialog-aword img{
+    height: 100%;
+    vertical-align: middle;
+}
+.dialog-socre {
+    height: 3rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+.dialog-score-result {
+    font-size: 2rem;
+    font-weight: bold;
+    vertical-align: middle;
+}
+.dialog-aword {
+    height: 2rem;
+    text-align: center;
+    margin-top: 1rem
+}
+.dialog-best-score {
+    width: 70%;
+    height: 3rem;
+    position: relative;
+    margin: 1rem auto 0;
+    background: red;
+    border-radius: 3rem;
+}
+.dialog-best-score img {
+    position: absolute;
+    height: 100%;
+    left: 0;
+    right: 0;
+    z-index: -1;
+}
