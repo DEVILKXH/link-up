@@ -57,6 +57,7 @@ var Game = (function(){
         init : function(){
             this.start();
             this.view.init(this,data);
+            this.getMaxScore();
         },
 
         start : function(){
@@ -98,7 +99,16 @@ var Game = (function(){
                 alert({title: '', content:'<div style="text-align: center">每日帮助已经达到上限</div>'})
             }
         },
-
+        getMaxScore: function () {
+            var openId = storage.getItem(global.OPENID)
+            api.post({
+                url: '/score/getMaxScore',
+                data: JSON.stringify({openId: openId, point: currentPoint}),
+                success: res => {
+                    $(".best-score-num").text(res.result)
+                }
+            })
+        },
         frozen: function () {
             frozen = true
             $(".current-time").stop()
@@ -130,7 +140,7 @@ var Game = (function(){
             $("#pause").show();
             $("#start").hide();
             frozen = false
-            $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
+            this.update()
         },
 
 
@@ -144,16 +154,10 @@ var Game = (function(){
         },
 
         update: function () {
-            this._update()
             this.startCountDown()
+            this._update()
         },
         startCountDown: function () {
-            let totalTime = pointConfig.times
-            var res = (data.time / totalTime * 100).toFixed(0) 
-            if (res < 0) {
-                res = 0
-            }
-            // $(".current-time").width(res + '%')
             $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
         },
         _update: function () {
@@ -247,7 +251,7 @@ var Game = (function(){
                 continueClick ++
                 clickTime = timestamp
                 data.time += 1
-                this.view.updateTime(data.time)
+                // this.view.updateTime(data.time)
                 this.startCountDown()
             } else {
                 continueClick = 0
@@ -464,51 +468,53 @@ var Game = (function(){
             return data.cell[pos.y][pos.x];
         },
 
+        next: function  () {
+            currentPoint ++;
+            storage.setItem(global.CURRENT_POINT, currentPoint)
+            window.location.reload()
+        },
+        again: function () {
+            window.location.reload()
+        }, 
+        closeDialog: function() {
+            $(".main-dialog").hide()
+        },
         winning: function () {
             win = true
             let that = this
             score += data.time * 20
             $(".time-panel").stop()
+
             setTimeout(function () {
-                that.saveScore(() => {
-                    confirm({
-                        title: '游戏结束',
-                        content: '<div>分数</div><div>'+ score +'</div>',
-                        cancelText: '回到首页',
-                        doneText: '下一关'
-                    }).then(() => {
-                        currentPoint ++;
-                        storage.setItem(global.CURRENT_POINT, currentPoint)
-                        window.location.reload()
-                    }).catch(() => {
-                        window.location = '/html/checkpoint.html'
-                    })
-                })
+                $(".fail-text").hide()
+                $(".success-text").show()
+                $(".next-point").show()
+                $(".dialog-aword").show()
+                $(".dialog-score-result").text(score)
+                $(".main-dialog").show()
+                that.saveScore()
             }, 50);
         },
         
         over: function () {
             $(".time-panel").stop()
             score = 0;
-            this.saveScore(() => {
-                confirm({
-                    title: '游戏结束',
-                    content: '<div>分数</div><div>'+ score +'</div>',
-                    cancelText: '重新选择',
-                    doneText: '重新开始' 
-                }).then(() => {
-                    window.location.reload()
-                }).catch(() => {
-                    window.location = '/html/checkpoint.html'
-                })
-            })
+            $(".fail-text").show()
+            $(".success-text").hide()
+            $(".next-point").hide();
+            $(".dialog-score-result").text(score)
+            $(".dialog-aword").hide()
+            $(".main-dialog").show()
+
+            this.saveScore()
         },
         saveScore: function (fn) {
+            let sucFn = fn || function () {}
             var openId = storage.getItem(global.OPENID)
             api.post({
                 url: '/score/save',
                 data: JSON.stringify({openId: openId, point: currentPoint, score: score}),
-                success: fn
+                success: sucFn
             })
         },
         checkWinning: function () {

@@ -1,4 +1,5 @@
 .main-dialog {
+    display: none;
     position: absolute;
     top: 0;
     left: 0; 
@@ -41,7 +42,7 @@
     text-align: center;
     margin-top: 3rem;
 }
-.dialog-result img, .dialog-socre img, .dialog-aword img{
+.dialog-result img, .dialog-socre img, .dialog-aword img, .dialog-footer img{
     height: 100%;
     vertical-align: middle;
 }
@@ -70,8 +71,35 @@
 }
 .dialog-best-score img {
     position: absolute;
-    height: 100%;
-    left: 0;
-    right: 0;
-    z-index: -1;
+    height: 50%;
+    top: 25%;
+    z-index: 0;
+}
+.dialog-best-score img.bg-score-left {
+    left: 1rem;
+}
+.dialog-best-score img.bg-score-right {
+    right: 1rem;
+}
+.best-score {
+    display: flex;
+    flex-flow: row;
+    line-height: 3rem;
+    font-size: 1rem;
+}
+.best-score > div {
+    flex-grow: 1;
+    text-align: right;
+    color: #dce849
+}
+.best-score .best-score-num {
+    margin-left: 1rem;
+    text-align: left;
+    color: #fff
+}
+
+.dialog-footer {
+    height: 3rem;
+    text-align: center;
+    margin-top: 0.5rem
 }

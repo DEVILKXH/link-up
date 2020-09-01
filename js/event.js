@@ -61,4 +61,19 @@ function event(game){
     on(start, 'click', function (e) {
         game.startGame()
     })
+
+    var next = $$("#next-point")[0]
+    on(next, 'click', function (e) {
+        game.next()
+    })
+
+    var again = $$("#play-again")[0]
+    on(again, 'click', function (e) {
+        game.again()
+    })
+
+    var close = $$("#dialog-bg")[0]
+    on(close, 'click', function (e) {
+        game.closeDialog()
+    })
 }

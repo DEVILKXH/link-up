@@ -8,8 +8,10 @@
   <title>连连看</title>
   <link rel="stylesheet" href="css/index.css">
   <style>
-      ul{padding: 0; margin: 0; display: flex; flex-direction: row; text-decoration: none; list-style: none; font-size: 1.2rem;}
+      .bg-rank {position: absolute; top:0; left: 0; width: 100%; height: 100%; z-index: 0}
+      ul{position: relative; padding: 0; margin: 0; display: flex; flex-direction: row; text-decoration: none; list-style: none; font-size: 1.2rem; z-index: 1}
       ul li {text-align: center; padding: 0.54rem; height: 2rem; line-height: 2rem; color: #fff}
+      ul li img {height: 80%; vertical-align: middle;}
       ul .rank{width: 3rem;} 
       ul .name{flex-grow: 1; text-align: left;} 
       ul .score{width: 5rem; color: orange} 
@@ -19,7 +21,7 @@
 </head>
 <body>
   <div class="bg-contents">
-    
+    <!-- <img src="bg/bg-rank.png" class="bg-rank"/> -->
   </div>
 </body>
 <script src="js/jquery.min.js"></script>
@@ -36,8 +38,19 @@
           success: response => {
               for (let i = 0; i < response.result.length; i ++) {
                   let result =  response.result[i]
-                  let html = `<ul> <li class='rank'>${i + 1}</li> <li class='name'> <img src="${result.userLogo}" class="img-user" /> <span class='name-info'>${result.userName}</span> </li> <li class="score">${result.score}</li> </ul>`
-                  $(".bg-contents").append(html)
+                  if(i < 3) {
+                    let src="first"
+                    if(i == 1) {
+                      src="second"
+                    } else if(i == 2) {
+                      src="third"
+                    }
+                    let html = `<ul> <li class='rank'><img src="bg/${src}-bg.png"/></li> <li class='name'> <img src="${result.userLogo}" class="img-user" /> <span class='name-info'>${result.userName}</span> </li> <li class="score">${result.score}</li> </ul>`
+                    $(".bg-contents").append(html)
+                  } else {
+                    let html = `<ul> <li class='rank'>${i + 1}</li> <li class='name'> <img src="${result.userLogo}" class="img-user" /> <span class='name-info'>${result.userName}</span> </li> <li class="score">${result.score}</li> </ul>`
+                    $(".bg-contents").append(html)
+                  }
               }
           }
       })

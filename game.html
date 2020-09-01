@@ -19,16 +19,20 @@
       .current-point-text {margin: 0 0.2rem}
       .container .grid-container {flex-grow: 1;}
       .time-score-pause {height: 5rem; display: flex; flex-direction: row; margin-top: 1rem;}
-      .time-score-pause img {height: 2rem;}
+      .time-score-pause img {height: 2rem; vertical-align: middle;}
       .time-score-pause .pause {width: 25%; text-align: center;}
       .time-score-pause .time-score {width: 75%; margin-left: 1rem; position: relative;}
-      .time-score-pause .time-score .time {width: 90%; position: relative;}
-      .time-score-pause .time-score .time img {width: 90%;}
-      .time-score-pause .time-score .current-time {width: 90%; position: absolute; height: 1rem; background-color: #fff705; border-radius: 1rem; top: 0.3rem;}
-      .time-score-pause .time-score .score {display: inline-block; background: url(bg/score.png); margin-top: 1rem; border-radius: 2rem; padding: 0 1rem}
-      .time-score-pause .time-score .score img {height: 1rem; }
+      .time-score-pause .time-score .time {width: 90%; height: 2rem; position: relative; border-radius: 2rem; overflow: hidden; background: url(bg/time-full.png); background-position: left;}
+      .time-score-pause .time-score .time .time-full {width: 100%;}
+      .time-score-pause .time-score .time .start {position: absolute; top: 0;}
+      .time-score-pause .time-score .time .start.time-ten{left: 10%;}
+      .time-score-pause .time-score .time .start.time-half{left: 45%;}
+      .time-score-pause .time-score .time .start.time-night{left: 80%;}
+      .time-score-pause .time-score .current-time {width: 100%; overflow: hidden; border-radius: 2rem; height: 2rem;}
+      .time-score-pause .time-score .current-time img{min-width: 100%}
+      .time-score-pause .time-score .score {display: inline-block; background: url(/bg/score.png); margin-top: 1rem; border-radius: 2rem; padding: 0 1rem}
       .time-score-pause .pause img {height: 4rem;}
-      .time-score-pause .time-score span  {display: inline-block; font-size: 1.2rem; line-height: 2rem; color: #fdf5d6; font-weight: bold;}
+      .time-score-pause .time-score span  {display: inline-block; font-size: 1.2rem; line-height: 2rem; color: #fdf5d6; font-weight: bold;     vertical-align: middle;}
       .dialog-content > div {flex-grow: 1; text-align: center;}
       .ui__content_body {color: #000}.heading{display: flex; flex-direction: row; height: 2em;}
       .current-point {text-align: center;}
@@ -141,17 +145,18 @@
     <div class="main-dialog">
         <div class="dialog-body">
             <div class="dialog-bg">
-                <img src="bg/game-over.png" />
+                <img src="bg/game-over.png"/>
             </div>
-            <div class="dialog-close">
+            <div class="dialog-close"  id="dialog-bg">
                 <img src="bg/close.png" />
             </div>
             <div class="dialog-result">
-                <img src="bg/fail-text.png" />
+                <img src="bg/fail-text.png" class="fail-text"/>
+                <img src="bg/success-text.png" class="success-text"/>
             </div>
             <div class="dialog-socre">
                 <img src="bg/score-text.png" />
-                <span class="dialog-score-result">168,720</span>
+                <span class="dialog-score-result"></span>
 
             </div>
             <div class="dialog-aword">
@@ -160,8 +165,16 @@
                 <img src="bg/add_one.png" />
             </div>
             <div class="dialog-best-score">
-                <img src="bg/bg-score.png">
-                <img src="bg/bg-score.png">
+                <img src="bg/bg-score.png" class="bg-score-left">
+                <div class="best-score">
+                    <div class="">最佳成绩</div>
+                    <div class="best-score-num"></div>
+                </div>
+                <img src="bg/bg-score.png" class="bg-score-right">
+            </div>
+            <div class="dialog-footer">
+                <img src="bg/next-point.png" class="next-point" id="next-point"/>
+                <img src="bg/play-again.png" class="play-again" id="play-again"/>
             </div>
         </div>
     </div>
