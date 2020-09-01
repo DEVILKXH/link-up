@@ -13,7 +13,7 @@ var View = (function(){
     var currentPoint = storage.getItem(global.CURRENT_POINT)
     var level, totalTime
     
-    if(undefined == currentPoint) {
+    if (undefined == currentPoint || null == currentPoint) {
         currentPoint = 1;
     }
     level = ALLPOINTS.data[currentPoint - 1]
@@ -25,10 +25,20 @@ var View = (function(){
 
         init : function(g,data){
             game = g;
+            this.initPointText()
             // this.updateTime(data.time);
             this.initGrid(data.cell);
         },
-
+        initPointText: function() {
+            let  r = currentPoint % 10;
+            let html = `<img src="bg/point-${r}.png" class='current-point-text' />`;
+            if(currentPoint > 9) {
+                r = parseInt(currentPoint / 10);
+                html = `<img src="bg/point-${r}.png" class='current-point-text' />` + html;
+            }
+            html = `<img src="bg/point-text-first.png" class='point-text'/>` + html + `<img src="bg/point-text-end.png" class='point-text'/>`;
+            $(".current-point").append(html)
+        },
         updateScore: function (score) {
             $(".current-score").text(score);
         },

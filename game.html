@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dialog.css">
   <title>连连看</title>
   <style>
       /* body {background: url(bg/game-bg.png); background-size: 100% 100%;} */
@@ -14,6 +15,8 @@
           flex-direction: row;
       }
       .header{height: 8rem;}
+      .point-text {margin: 0 1rem;}
+      .current-point-text {margin: 0 0.2rem}
       .container .grid-container {flex-grow: 1;}
       .time-score-pause {height: 5rem; display: flex; flex-direction: row; margin-top: 1rem;}
       .time-score-pause img {height: 2rem;}
@@ -50,13 +53,14 @@
       .prop img + img {margin-left: 0.5rem}
       /* .grid-item{border: 1px solid #fff !important;} */
       
-      .frozen-move {display: -none; width: 3rem; height: 3rem; position: absolute; left: 0; top: 0;}
+      .frozen-move {display: none; width: 3rem; height: 3rem; position: absolute; left: 0; top: 0;}
       .frozen-body {width: 0.5rem; height: 4rem; border-radius: 3rem; margin: 0 auto; background:linear-gradient(to top, transparent , #fff);  box-shadow: 0 0 0.8rem #fff; /*transform: rotate(-16deg); -webkit-transform: rotate(-16deg); -ms-transform: rotate(-16deg)*/}
       
       
       .grid-cell {display: flex; flex-direction: row;}
       .grid-item {flex-grow: 1;}
       .grid-item-content img {width: 100%; height: 100%;}
+      #start{display: none}
       
 
       @keyframes changeSize{
@@ -83,13 +87,18 @@
     <div class="container">
         <div class="header">
             <div class="current-point">
-                <img src="bg/1.png" />
+                
             </div>
             <div class="time-score-pause">
                 <div class="time-score">
                     <div class="time">
-                        <img src="bg/time.png"/>
-                        <div class="current-time"></div>
+                        <div class='current-time'>
+                            <img src="bg/time-move.png" />
+                        </div>
+                        <img src="bg/start-unactive.png" class='time-ten start'/>
+                        <img src="bg/start-unactive.png" class='time-half start'/>
+                        <img src="bg/start-unactive.png" class='time-night start'/>
+
                     </div>
                     <div class="score">
                         <img src="bg/score-text.png"/>
@@ -97,7 +106,8 @@
                     </div>
                 </div>
                 <div class="pause">
-                    <img src="bg/pause.png"/>
+                    <img src="bg/pause.png" id="pause"/>
+                    <img src="bg/start.png" id="start"/>
                 </div>
             </div>
             <div class="continue-click"></div>
@@ -127,6 +137,33 @@
     </div>
     <div class="count-down">
         <div class="content">1</div>
+    </div>
+    <div class="main-dialog">
+        <div class="dialog-body">
+            <div class="dialog-bg">
+                <img src="bg/game-over.png" />
+            </div>
+            <div class="dialog-close">
+                <img src="bg/close.png" />
+            </div>
+            <div class="dialog-result">
+                <img src="bg/fail-text.png" />
+            </div>
+            <div class="dialog-socre">
+                <img src="bg/score-text.png" />
+                <span class="dialog-score-result">168,720</span>
+
+            </div>
+            <div class="dialog-aword">
+                <img src="bg/success-aword.png" />
+                <img src="bg/refresh.png" />
+                <img src="bg/add_one.png" />
+            </div>
+            <div class="dialog-best-score">
+                <img src="bg/bg-score.png">
+                <img src="bg/bg-score.png">
+            </div>
+        </div>
     </div>
 
     <script src="js/jquery.min.js"></script>
