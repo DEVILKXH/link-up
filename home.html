@@ -33,39 +33,15 @@
 <script src="js/api.js"></script>
 <script src="js/user.js"></script>
 <script>
+  
   $(function () {
-    var element = document.documentElement;
-    if(element.requestFullscreen) {
-        element.requestFullscreen();
-    } else if (element.mozRequestFullScreen){   // 兼容火狐
-        element.mozRequestFullScreen();
-    } else if(element.webkitRequestFullscreen) {    // 兼容谷歌
-        element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) {   // 兼容IE
-        element.msRequestFullscreen();
-    }
-    
     let user = new User()
     let storage = new MyStorage()
     // setOpenId()
-    getOpenId()
     $('.start').click(user.play)
     $('.rank-content').click(function () {
       window.location = '/html/rank.html'
     })
-
-
-    function getOpenId() {
-      if (undefined == storage.getItem(global.OPENID) || null == storage.getItem(global.OPENID)) {
-        var code = getParamByUrl('code')
-        if(code != '') {
-        user.wechatLogin(code)
-        }
-        // window.location.href = "http://localhost:8080/html/home.html?code=" + code
-      } else {
-        //window.location = '/html/index.html'
-      }
-    }
 
     var api = new Api()
     api.post({
@@ -78,49 +54,59 @@
                 appId: 'wxd21cf43aa834218f', // 必填，公众号的唯一标识
                 timestamp: response.result.timestamp, // 必填，生成签名的时间戳
                 nonceStr: response.result.noncestr, // 必填，生成签名的随机串
-                signature: response.result.signature,// 必填，签名
+                signature: response.result.sign,// 必填，签名
                 jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData','onMenuShareAppMessage', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表
             });
 
             wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
-                wx.updateAppMessageShareData({ 
-                    title: '一起连连看', // 分享标题
-                    desc: '快来一起连连看吧', // 分享描述
-                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
-                    success: function () {
-                        // alert({content: '分享成功'})
-                    }
-                })
-                wx.onMenuShareAppMessage({ 
-                    title: '一起连连看', // 分享标题
-                    desc: '快来一起连连看吧', // 分享描述
-                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
-                    success: function () {
-                        // alert({content: '分享成功'})
-                    }
-                })
-                wx.updateTimelineShareData({ 
-                    title: '一起连连看', // 分享标题
-                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
-                    success: function () {
-                        // 设置成功
-                        // alert({content: '分享成功'})
-                    }
-                })
-                wx.onMenuShareQZone({ 
-                    title: '一起连连看', // 分享标题
-                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
-                    success: function () {
-                        // 设置成功
-                        // alert({content: '分享成功'})
-                    }
-                })
-            });
+              wx.updateAppMessageShareData({ 
+                  title: '一起连连看', // 分享标题
+                  desc: '快来一起连连看吧', // 分享描述
+                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  success: function () {
+                      // alert({content: '分享成功'})
+                  }
+              })
+              wx.onMenuShareAppMessage({ 
+                  title: '一起连连看', // 分享标题
+                  desc: '快来一起连连看吧', // 分享描述
+                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  success: function () {
+                      // alert({content: '分享成功'})
+                  }
+              })
+              wx.updateTimelineShareData({ 
+                  title: '一起连连看', // 分享标题
+                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  success: function () {
+                      // 设置成功
+                      // alert({content: '分享成功'})
+                  }
+              })
+              wx.onMenuShareQZone({ 
+                  title: '一起连连看', // 分享标题
+                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  success: function () {
+                      // 设置成功
+                      // alert({content: '分享成功'})
+                  }
+              })
 
+            });
+            var element = document.documentElement;
+            if(element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen){   // 兼容火狐
+                element.mozRequestFullScreen();
+            } else if(element.webkitRequestFullscreen) {    // 兼容谷歌
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {   // 兼容IE
+                element.msRequestFullscreen();
+            }
         }
     })
   }) 

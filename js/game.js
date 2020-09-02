@@ -107,6 +107,15 @@ var Game = (function(){
                 this.startBoom()
             } else {
                 alert({title: '', content:'<div style="text-align: center">每日帮助已经达到上限</div>'})
+                shareData = {
+                    title: '一起连连看2', // 分享标题
+                    desc: '快来一起连连看吧2', // 分享描述
+                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                    success: function () {
+                        alert({content: '分享成功'})
+                    }
+                }
             }
         },
         startBoom: function () {
