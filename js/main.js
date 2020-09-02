@@ -9,11 +9,13 @@ on(window,'load',function(){
     event(game);
     var content = $(".content")[0]
     // content.parentNode.style.display = 'none'
-    content.innerHTML = 3
+    // content.innerHTML = 3
+    
+    $(".count-1").show()
     content.parentNode.style.display = 'block'
-    setTimeout(function () { content.innerHTML = 2}, 1000)
-    setTimeout(function () { content.innerHTML = 1}, 2000)
-    setTimeout(function () { content.innerHTML = 'GO'}, 3000)
+    setTimeout(function () { $(".count-1").hide(); $(".count-2").show()}, 1000)
+    setTimeout(function () { $(".count-2").hide(); $(".count-3").show()}, 2000)
+    setTimeout(function () { $(".count-3").hide(); $(".count-go").show()}, 3000)
     setTimeout(function () { content.parentNode.style.display = 'none'; saveLog(); 
         game.update()
     }, 4000)

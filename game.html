@@ -40,7 +40,8 @@
       .current-point {text-align: center;}
       .current-point img{height: 2rem;}
       .count-down {position: absolute; width: 100%; height: 100%; top: 0; left: 0}
-      .count-down .content {position: absolute; left: 0; right: 0; top: 0; bottom: 0; margin: auto;  height: 100px; line-height: 100px; text-align: center; font-size: 8rem; color: orange; animation: changeSize 2s linear 0s infinite alternate; -moz-animation: changeSize 2s linear 0s infinite alternate;	/* Firefox */ -webkit-animation: changeSize 2s linear 0s infinite alternate;	/* Safari 和 Chrome */ -o-animation: changeSize 2s linear 0s infinite alternate;	/* Opera */}
+      .count-down .content {position: absolute; left: 0; right: 0; top: 0; bottom: 0; margin: auto;  height: 8rem; line-height: 100px; text-align: center; font-size: 8rem; color: orange; animation: changeSize 2s linear 0s infinite alternate; -moz-animation: changeSize 2s linear 0s infinite alternate;	/* Firefox */ -webkit-animation: changeSize 2s linear 0s infinite alternate;	/* Safari 和 Chrome */ -o-animation: changeSize 2s linear 0s infinite alternate;	/* Opera */}
+      .count-down .content img {height: 100%; display: none;}
       .count-content, .count-content .frozen {position: relative; border-radius: 1rem; padding-right: 0.2rem;}
       .count-content {background: #dc9c54; border: 2px solid #f4d3b9; }
       /* .count-content .frozen{position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: url(bg/frozen.jpg); opacity: 0.5;} */
@@ -161,7 +162,12 @@
     <img src="bg/boom.png" class="boom" />
     <img src="bg/boom-boom.png" class="boom-boom" />
     <div class="count-down">
-        <div class="content">1</div>
+        <div class="content">
+            <img src="bg/count-3.png" class="count-down-img count-1"/>
+            <img src="bg/count-2.png" class="count-down-img count-2"/>
+            <img src="bg/count-1.png" class="count-down-img count-3"/>
+            <img src="bg/go.png" class="count-down-img count-go"/>
+        </div>
     </div>
     <div class="main-dialog">
         <div class="dialog-body">
@@ -217,6 +223,7 @@
 </body>
 <script>
     var api = new Api()
+    var storage = new MyStorage()
     api.post({
         url: '/user/sign',
         data: window.location.href,

@@ -34,39 +34,39 @@
   $(function() {
     
     let img = [
-      "bg/1.png", "bg/2.png", "bg/3.png", "bg/4.png", "bg/5.png", "bg/add_one.png", "bg/aword.png", 
-      "bg/bg-content.png", "bg/bg-rank.png", "bg/bg-score.png", "bg/bg.jpg", "bg/boom-boom.png", 
-      "bg/boom.png", "bg/close.png", "bg/coin_bg.jpg", "bg/dw_bg.jpg", "bg/fail-text.png", "bg/first-bg.png", 
-      "bg/frozen.png", "bg/game-over.png", "bg/hourglass.png", "bg/id.png", "bg/info.png", "bg/lock.png", 
-      "bg/love_bg.jpg", "bg/pause.png", "bg/play-again.png", "bg/point-1.png", "bg/point-2.png", "bg/point-4.png", 
-      "bg/point-5.png", "bg/point-6.png", "bg/point-7.png", "bg/point-8.png", "bg/point-9.png", 
-      "bg/point-text-end.png", "bg/point-text-first.png", "bg/point-text.png", "bg/rank-bg.png", "bg/rank-text-2.png",
-      "bg/rank-text.png", "bg/refresh.png", "bg/score-text.png", "bg/score.png", "bg/sc_bg.jpg", "bg/second-bg.png", 
-      "bg/sg_bg.jpg", "bg/socre-text.png", "bg/start-active.png", "bg/start-unactive.png", "bg/start.png", 
-      "bg/third-bg.png", "bg/time-full.png", "bg/time-move.png", "bg/timg.png", "bg/tip.png",  "bg/success-text.png",
-      "bg/user-32px.png", "bg/victore-text.png", "bg/view-rank.png", "bg/next-point.png", "bg/point-0.png",
+      "bg/add_one.png", "bg/aword.png", "bg/bg-content.png", "bg/bg-rank.png", "bg/bg-score.png", "bg/bg.jpg", 
+      "bg/boom-boom.png", "bg/boom.png", "bg/close.png", "bg/coin_bg.jpg", "bg/count-1.png", "bg/count-2.png", 
+      "bg/count-3.png","bg/go.png", "bg/dw_bg.jpg", "bg/fail-text.png", "bg/first-bg.png", "bg/frozen.png", "bg/game-over.png", 
+      "bg/game-rank.png", "bg/hourglass.png", "bg/id.png", "bg/info.png", "bg/lock.png", "bg/love_bg.jpg", 
+      "bg/next-point.png", "bg/pause.png", "bg/play-again.png", "bg/point-0.png", "bg/point-1.png", "bg/point-2.png", 
+      "bg/point-3.png", "bg/point-4.png", "bg/point-5.png", "bg/point-6.png", "bg/point-7.png", "bg/point-8.png", 
+      "bg/point-9.png", "bg/point-text-end.png", "bg/point-text-first.png", "bg/point-text.png", "bg/rank-bg.png",
+      "bg/rank-text-2.png", "bg/rank-text.png", "bg/refresh.png", "bg/score-text.png", "bg/score.png", 
+      "bg/sc_bg.jpg", "bg/second-bg.png", "bg/sg_bg.jpg", "bg/socre-text.png", "bg/start-active.png", 
+      "bg/start-unactive.png", "bg/start.png", "bg/success-aword.png", "bg/success-text.png", "bg/third-bg.png", 
+      "bg/time-full.png", "bg/time-move.png", "bg/timg.png", "bg/tip.png", "bg/view-rank.png",
       "img/0.png","img/1.png","img/2.png","img/3.png","img/4.png","img/5.png","img/6.png","img/7.png","img/8.png",
       "img/9.png","img/10.png","img/11.png","img/12.png","img/13.png","img/14.png","img/15.png","img/16.png",
       "img/17.png","img/18.png","img/19.png","img/20.png","img/21.png","img/22.png"
     ];
     let index = 0;
-    for(let i = 0; i < img.length; i ++) {
+    
+    function load() {
+      if(index == img.length) {
+        window.location.href="/html/home.html"
+        return ;
+      }
       let image = new Image();
-      let src = "http://www.lrans.xin/html/" + img[i];
+      let src = "http://www.lrans.xin/html/" + img[index];
       image.src = src;
       image.onload = function() {
         index ++;
         $(".img").append(`<img src="${src}">`)
+        load()
       }
     }
 
-    let timer = setInterval(() => {
-      if(index == img.length) {
-        console.log("done")
-        clearInterval(timer);
-        window.location.href="/html/home.html"
-      }
-    }, 1000);
+    load();
   })
 </script>
 </html>
