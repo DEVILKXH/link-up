@@ -73,6 +73,10 @@ var Game = (function(){
 
         
         refresh: function () {
+            if(win || data.time == 0) {
+                alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
+                return ;
+            }
             if (helpCount < config.maxHelpCount){
                 helpCount ++
                 this.randomReset()
@@ -82,6 +86,10 @@ var Game = (function(){
         },
         
         help: function () {
+            if(win || data.time == 0) {
+                alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
+                return ;
+            }
             if (helpCount < config.maxHelpCount){
                 helpCount ++
                 this.judge.apply(this, hlepData);
@@ -91,13 +99,33 @@ var Game = (function(){
         },
 
         boom: function () {
+            if(win || data.time == 0) {
+                alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
+                return ;
+            }
             if (helpCount < config.maxHelpCount){
-                helpCount ++
-                hlepData.push(true)
-                this.judge.apply(this, hlepData);
+                this.startBoom()
             } else {
                 alert({title: '', content:'<div style="text-align: center">每日帮助已经达到上限</div>'})
             }
+        },
+        startBoom: function () {
+            let that = this;
+            let boom = $(".boom");
+            let boom2 = $("#boom")
+            boom.show()
+            boom.offset(boom2.offset())
+            let offset = $(".boom-boom").offset()
+            boom.animate({top: offset.top, left: offset.left}, 1000, 'linear',  () => {
+                boom.hide();
+                $(".boom-boom").addClass("animate-active");
+                setTimeout( () => {
+                    $(".boom-boom").removeClass("animate-active")
+                    helpCount ++
+                    hlepData.push(true)
+                    that.judge.apply(this, hlepData);
+                }, 1000)
+            })
         },
         getMaxScore: function () {
             var openId = storage.getItem(global.OPENID)
@@ -110,6 +138,10 @@ var Game = (function(){
             })
         },
         frozen: function () {
+            if(win || data.time == 0) {
+                alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
+                return ;
+            }
             frozen = true
             $(".current-time").stop()
             var offset = $("#frozen").offset()
@@ -124,6 +156,7 @@ var Game = (function(){
             var offset = $(".current-time").offset()
             let that = this
             $(".frozen-move").animate({top: Math.floor(offset.top) + 'px', left: Math.floor(offset.left) + 'px'}, 1000, "linear", function () {
+                $(".time-frozen").fadeIn()
                 that.stop()
             })
         },
@@ -149,6 +182,7 @@ var Game = (function(){
             let that = this
             setTimeout(function () {
                 frozen = false
+                $(".time-frozen").fadeOut()
                 that.update()
             }, 7000)
         },

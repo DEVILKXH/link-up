@@ -8,20 +8,29 @@
   <title>连连看</title>
   <link rel="stylesheet" href="css/index.css">
   <style>
+      .bg-contents{display: flex; flex-direction: column;}
+      .bg-game {position: absolute; top: 0; left: 0; width: 100%; height: 100%;}
       .bg-rank {position: absolute; top:0; left: 0; width: 100%; height: 100%; z-index: 0}
+      .rank-header {height: 4rem; margin: 0.5rem auto 1rem; text-align: center; position: relative; z-index: 0;}
+      .rank-header img{ height: 100%;}
       ul{position: relative; padding: 0; margin: 0; display: flex; flex-direction: row; text-decoration: none; list-style: none; font-size: 1.2rem; z-index: 1}
       ul li {text-align: center; padding: 0.54rem; height: 2rem; line-height: 2rem; color: #fff}
       ul li img {height: 80%; vertical-align: middle;}
       ul .rank{width: 3rem;} 
-      ul .name{flex-grow: 1; text-align: left;} 
-      ul .score{width: 5rem; color: orange} 
+      ul .name{flex-grow: 1; text-align: left;overflow: hidden; white-space: nowrap; text-overflow: ellipsis;} 
+      ul .score{width: 5rem; color: #fff; font-weight: bold; text-align: right;} 
       .img-user {width: 2rem; height: 2rem; margin-right: 1rem; border-radius: 2rem; vertical-align:middle}
       .name-info {vertical-align:middle}
+      .rank-body {flex-grow: 1; padding: 0 2rem 1rem 1.5rem}
   </style>
 </head>
 <body>
   <div class="bg-contents">
-    <!-- <img src="bg/bg-rank.png" class="bg-rank"/> -->
+    <img src="bg/game-over.png" class="bg-game">
+    <div class="rank-header">
+      <img src="bg/game-rank.png">
+    </div>
+    <div class="rank-body"></div>
   </div>
 </body>
 <script src="js/jquery.min.js"></script>
@@ -46,10 +55,10 @@
                       src="third"
                     }
                     let html = `<ul> <li class='rank'><img src="bg/${src}-bg.png"/></li> <li class='name'> <img src="${result.userLogo}" class="img-user" /> <span class='name-info'>${result.userName}</span> </li> <li class="score">${result.score}</li> </ul>`
-                    $(".bg-contents").append(html)
+                    $(".rank-body").append(html)
                   } else {
                     let html = `<ul> <li class='rank'>${i + 1}</li> <li class='name'> <img src="${result.userLogo}" class="img-user" /> <span class='name-info'>${result.userName}</span> </li> <li class="score">${result.score}</li> </ul>`
-                    $(".bg-contents").append(html)
+                    $(".rank-body").append(html)
                   }
               }
           }

@@ -22,12 +22,14 @@
       .time-score-pause img {height: 2rem; vertical-align: middle;}
       .time-score-pause .pause {width: 25%; text-align: center;}
       .time-score-pause .time-score {width: 75%; margin-left: 1rem; position: relative;}
-      .time-score-pause .time-score .time {width: 90%; height: 2rem; position: relative; border-radius: 2rem; overflow: hidden; background: url(bg/time-full.png); background-position: left;}
+      .time-score-pause .time-score .time {width: 90%; height: 2rem; position: relative; border-radius: 2rem; background: url(bg/time-full.png); background-position: left;}
       .time-score-pause .time-score .time .time-full {width: 100%;}
       .time-score-pause .time-score .time .start {position: absolute; top: 0;}
       .time-score-pause .time-score .time .start.time-ten{left: 10%;}
       .time-score-pause .time-score .time .start.time-half{left: 45%;}
       .time-score-pause .time-score .time .start.time-night{left: 80%;}
+      .time-score-pause .time-score .time .time-frozen {position: absolute; top: -0.5rem; left: -5%; width: 110%; height: 3rem; z-index: 2; display: none;}
+      .time-score-pause .time-score .time .time-frozen img {width: 100%; height: 100%}
       .time-score-pause .time-score .current-time {width: 100%; overflow: hidden; border-radius: 2rem; height: 2rem;}
       .time-score-pause .time-score .current-time img{min-width: 100%}
       .time-score-pause .time-score .score {display: inline-block; background: url(/bg/score.png); margin-top: 1rem; border-radius: 2rem; padding: 0 1rem}
@@ -65,7 +67,9 @@
       .grid-item {flex-grow: 1;}
       .grid-item-content img {width: 100%; height: 100%;}
       #start{display: none}
-      
+      .boom {position: absolute; top: 0; left: 0; width: 4rem; display: none;}
+      .boom-boom {position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; width: 6rem; opacity: 0; z-index: -1}
+      .animate-active {opacity: 1; z-index: 0; animation: boom 2s linear 0s 1 alternate; -moz-animation: boom 2s linear 0s 1 alternate;	/* Firefox */ -webkit-animation: boom 2s linear 0s 1 alternate;	/* Safari 和 Chrome */ -o-animation: boom 2s linear 0s 1 alternate;}
 
       @keyframes changeSize{
         0% {
@@ -83,7 +87,20 @@
             -ms-transform:scale(0.8); /* IE 9 */
             -webkit-transform:scale(0.8); /* Safari and Chrome */
         }
-    }
+     }
+
+     @keyframes boom{
+        0% {
+            transform:scale(0.5);
+            -ms-transform:scale(0.5); /* IE 9 */
+            -webkit-transform:scale(0.5); /* Safari and Chrome */
+        }
+        100% {
+            transform:scale(1);
+            -ms-transform:scale(1); /* IE 9 */
+            -webkit-transform:scale(1); /* Safari and Chrome */
+        }
+     }
   </style>
 </head>
 
@@ -99,10 +116,12 @@
                         <div class='current-time'>
                             <img src="bg/time-move.png" />
                         </div>
+                        <div class="time-frozen">
+                            <img src="bg/frozen.png"/>
+                        </div>
                         <img src="bg/start-unactive.png" class='time-ten start'/>
                         <img src="bg/start-unactive.png" class='time-half start'/>
                         <img src="bg/start-unactive.png" class='time-night start'/>
-
                     </div>
                     <div class="score">
                         <img src="bg/score-text.png"/>
@@ -139,6 +158,8 @@
     <div class="frozen-move">
         <div class="frozen-body"></div>
     </div>
+    <img src="bg/boom.png" class="boom" />
+    <img src="bg/boom-boom.png" class="boom-boom" />
     <div class="count-down">
         <div class="content">1</div>
     </div>
@@ -195,64 +216,64 @@
     <script src="js/main.js?v=1324"></script>
 </body>
 <script>
-    // var api = new Api()
-    // api.post({
-    //     url: '/user/sign',
-    //     data: window.location.href,
-    //     success: function (response) {
+    var api = new Api()
+    api.post({
+        url: '/user/sign',
+        data: window.location.href,
+        success: function (response) {
             
-    //       let openId = storage.getItem(global.OPENID)
-    //         wx.config({
-    //             debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    //             appId: 'wxd21cf43aa834218f', // 必填，公众号的唯一标识
-    //             timestamp: response.result.timestamp, // 必填，生成签名的时间戳
-    //             nonceStr: response.result.noncestr, // 必填，生成签名的随机串
-    //             signature: response.result.signature,// 必填，签名
-    //             jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', ,'onMenuShareAppMessage', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表
-    //         });
+          let openId = storage.getItem(global.OPENID)
+            wx.config({
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                appId: 'wxd21cf43aa834218f', // 必填，公众号的唯一标识
+                timestamp: response.result.timestamp, // 必填，生成签名的时间戳
+                nonceStr: response.result.noncestr, // 必填，生成签名的随机串
+                signature: response.result.signature,// 必填，签名
+                jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', ,'onMenuShareAppMessage', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表
+            });
 
-    //         wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
-    //             wx.updateAppMessageShareData({ 
-    //                 title: '一起连连看', // 分享标题
-    //                 desc: '快来一起连连看吧', // 分享描述
-    //                 link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //                 imgUrl: window.origin + '/html/img/0.png', // 分享图标
-    //                 success: function () {
-    //                     console.log('分享成功')
-    //                     config.maxHelpCount ++
-    //                 }
-    //             })
-    //             wx.onMenuShareAppMessage({ 
-    //               title: '一起连连看', // 分享标题
-    //               desc: '快来一起连连看吧', // 分享描述
-    //               link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //               imgUrl: window.origin + '/html/img/0.png', // 分享图标
-    //               success: function () {
-    //                   alert({content: '分享成功'})
-    //               }
-    //             })
+            wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+                wx.updateAppMessageShareData({ 
+                    title: '一起连连看', // 分享标题
+                    desc: '快来一起连连看吧', // 分享描述
+                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                    success: function () {
+                        console.log('分享成功')
+                        config.maxHelpCount ++
+                    }
+                }) 
+                wx.onMenuShareAppMessage({ 
+                  title: '一起连连看', // 分享标题
+                  desc: '快来一起连连看吧', // 分享描述
+                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  success: function () {
+                      alert({content: '分享成功'})
+                  }
+                })
 
-    //             wx.updateTimelineShareData({ 
-    //                 title: '一起连连看', // 分享标题
-    //                 link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //                 imgUrl: window.origin + '/html/img/0.png', // 分享图标
-    //                 success: function () {
-    //                     // 设置成功
-    //                     config.maxHelpCount ++
-    //                 }
-    //             })
-    //             wx.onMenuShareQZone({ 
-    //               title: '一起连连看', // 分享标题
-    //               link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //               imgUrl: window.origin + '/html/img/0.png', // 分享图标
-    //               success: function () {
-    //                   // 设置成功
-    //                   alert({content: '分享成功'})
-    //               }
-    //           })
-    //         });
+                wx.updateTimelineShareData({ 
+                    title: '一起连连看', // 分享标题
+                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                    success: function () {
+                        // 设置成功
+                        config.maxHelpCount ++
+                    }
+                })
+                wx.onMenuShareQZone({ 
+                  title: '一起连连看', // 分享标题
+                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  success: function () {
+                      // 设置成功
+                      alert({content: '分享成功'})
+                  }
+              })
+            });
 
-    //     }
-    // })
+        }
+    })
 </script>
 </html>

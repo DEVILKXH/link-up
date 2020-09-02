@@ -15,7 +15,7 @@ on(window,'load',function(){
     setTimeout(function () { content.innerHTML = 1}, 2000)
     setTimeout(function () { content.innerHTML = 'GO'}, 3000)
     setTimeout(function () { content.parentNode.style.display = 'none'; saveLog(); 
-        game.update()
+        // game.update()
     }, 4000)
 });
 
