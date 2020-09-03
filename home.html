@@ -18,13 +18,15 @@
 </style>
 </head>
 <body>
-  <div class="bg-contents">
-    <img src="bg/timg.png" class='start scale'/>
-     <img src="bg/view-rank.png" class='rank-content scale'/>
-    <!-- <div class="rank-content scale" style="text-align: center; font-size: 4rem; color: white;">查看排行榜</div> -->
     
+    <div class="bg-contents">
+        <img src="bg/timg.png" class='start scale'/>
+        <img src="bg/view-rank.png" class='rank-content scale'/>
   </div>
+  
+  <iframe src = "video/bg-video.mp3" allow = "autoplay" hidden class="iframe"></iframe>
 </body>
+
 <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/alert.js"></script>
@@ -36,8 +38,12 @@
 <script>
   
   $(function () {
+    
+    $("video[name=media]").loop = true
+    $("video[name=media]")[0].play() = true
     let user = new User()
     let storage = new MyStorage()
+
     // setOpenId()
     $('.start').click(user.play)
     $('.rank-content').click(function () {
@@ -98,16 +104,16 @@
               })
 
             });
-            var element = document.documentElement;
-            if(element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.mozRequestFullScreen){   // 兼容火狐
-                element.mozRequestFullScreen();
-            } else if(element.webkitRequestFullscreen) {    // 兼容谷歌
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) {   // 兼容IE
-                element.msRequestFullscreen();
-            }
+            // var element = document.documentElement;
+            // if(element.requestFullscreen) {
+            //     element.requestFullscreen();
+            // } else if (element.mozRequestFullScreen){   // 兼容火狐
+            //     element.mozRequestFullScreen();
+            // } else if(element.webkitRequestFullscreen) {    // 兼容谷歌
+            //     element.webkitRequestFullscreen();
+            // } else if (element.msRequestFullscreen) {   // 兼容IE
+            //     element.msRequestFullscreen();
+            // }
         }
     })
   }) 
