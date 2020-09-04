@@ -18,13 +18,15 @@
 </style>
 </head>
 <body>
-    
+    <audio src="video/bg-video.mp3" muted autoplay loop class="audio"></audio>
+    <img src="bg/music.png" class="music on" />
+    <img src="bg/music_off.png" class="music off" />
     <div class="bg-contents">
         <img src="bg/timg.png" class='start scale'/>
         <img src="bg/view-rank.png" class='rank-content scale'/>
   </div>
   
-  <iframe src = "video/bg-video.mp3" allow = "autoplay" hidden class="iframe"></iframe>
+  <!-- <iframe src = "video/bg-video.mp3" allow = "autoplay" hidden class="iframe"></iframe> -->
 </body>
 
 <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
@@ -39,12 +41,33 @@
   
   $(function () {
     
-    $("video[name=media]").loop = true
-    $("video[name=media]")[0].play() = true
+    // $("video[name=media]").loop = true
+    // $("video[name=media]")[0].play() = true
     let user = new User()
     let storage = new MyStorage()
 
     // setOpenId()
+
+    $(".on").click(function () {
+        $(".off").show()
+        $(".on").hide()
+        $(".audio")[0].muted = true
+        $(".audio")[0].pause();
+    })
+
+    
+    $(".off").click(function () {
+        $(".off").hide()
+        $(".on").show()
+        $(".audio")[0].muted = false
+        $(".audio")[0].play();
+    })
+
+    // setTimeout(function () {
+
+    //     $(".off").click()
+    // }, 2000)
+
     $('.start').click(user.play)
     $('.rank-content').click(function () {
       window.location = '/html/rank.html'
