@@ -14,6 +14,14 @@
           display: flex;
           flex-direction: row;
       }
+      .music {position:absolute; top: 1rem; right: 1rem; width: 2rem; z-index: 2;border-radius: 2rem; border: 2px solid #3249d2} 
+      .music.on {
+        animation: circleMove 2s linear 0s infinite normal;
+        -moz-animation: circleMove 2s linear 0s infinite normal;	/* Firefox */
+        -webkit-animation: circleMove 2s linear 0s infinite normal;	/* Safari 和 Chrome */
+        -o-animation: circleMove 2s linear 0s infinite normal;	/* Opera */
+     }
+     .music.off{display: none;}
       .header{height: 8rem;}
       .point-text {margin: 0 1rem;}
       .current-point-text {margin: 0 0.2rem}
@@ -71,7 +79,8 @@
       .boom {position: absolute; top: 0; left: 0; width: 4rem; display: none;}
       .boom-boom {position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; width: 6rem; opacity: 0; z-index: -1}
       .animate-active {opacity: 1; z-index: 0; animation: boom 2s linear 0s 1 alternate; -moz-animation: boom 2s linear 0s 1 alternate;	/* Firefox */ -webkit-animation: boom 2s linear 0s 1 alternate;	/* Safari 和 Chrome */ -o-animation: boom 2s linear 0s 1 alternate;}
-
+      .video,.music-bg {visibility: hidden; position: absolute; z-index: -2}
+      .grid-item-direction.up > div.y, .grid-item-direction.down > div.y {width: 1px;}
       @keyframes changeSize{
         0% {
             transform:scale(0.8);
@@ -102,10 +111,36 @@
             -webkit-transform:scale(1); /* Safari and Chrome */
         }
      }
+     @keyframes circleMove{
+    0% {
+        transform:rotate(0deg);
+        -ms-transform:rotate(0deg); /* IE 9 */
+        -webkit-transform:rotate(0deg); /* Safari and Chrome */
+    }
+    50% {
+        transform:rotate(180deg);
+        -ms-transform:rotate(180deg); /* IE 9 */
+        -webkit-transform:rotate(180deg); /* Safari and Chrome */
+    }
+    100% {
+        transform:rotate(360deg);
+        -ms-transform:rotate(360deg); /* IE 9 */
+        -webkit-transform:rotate(360deg); /* Safari and Chrome */
+    }
+}
   </style>
 </head>
 
 <body>
+    <video src="video/bg-video.mp3" webkit-playsinline="true" playsinline="true" x-webkit-airplay="true" x5-playsinline="true" x5-video-ignore-metadata="true" controls autoplay loop id="video" class="video"></video>
+    <video src="video/biu.mp3" class="biu music-bg"></video>
+    <video src="video/victory.mp3" class="victory music-bg"></video>
+    <video src="video/fail.mp3" class="fail music-bg"></video>
+    <video src="video/bomb.mp3" class="bomb music-bg"></video>
+
+    <img src="bg/music.png" class="music on" />
+    <img src="bg/music_off.png" class="music off" />
+    
     <div class="container">
         <div class="header">
             <div class="current-point">
@@ -222,14 +257,43 @@
     <script src="js/main.js?v=1324"></script>
 </body>
 <script>
+    let audio = document.getElementById('video')
+    audio.addEventListener('canplay', function () {
+        console.log('mp3 loading')
+        // audio.muted = false;
+        // audio.pause()
+        // audio.play()
+    })
+    document.addEventListener("WeixinJSBridgeReady", () => {
+        WeixinJSBridge.invoke('getNetworkType', {}, function () {
+            audio.play()
+        });
+    });
+    $(function () {
+
+        $(".on").click(function () {
+            $(".off").show()
+            $(".on").hide()
+            audio.pause()
+            return false
+        })
+
+        
+        $(".off").click(function () {
+            $(".off").hide()
+            $(".on").show()
+            audio.play()
+        })
+    })
+
     var api = new Api()
     var storage = new MyStorage()
     let openId = storage.getItem(global.OPENID)
     let shareData = { 
         title: '一起连连看', // 分享标题
         desc: '快来一起连连看吧', // 分享描述
-        link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl: window.origin + '/html/img/0.png', // 分享图标
+        link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: window.origin + '/img/0.png', // 分享图标
         success: function () {
             // alert({content: '分享成功'})
         }

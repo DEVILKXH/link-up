@@ -25,11 +25,13 @@
 
 .music {position:absolute; top: 1rem; right: 1rem; width: 2rem; z-index: 2;border-radius: 2rem; border: 2px solid #3249d2} 
 .music.on {
-    display: none;
     animation: circleMove 2s linear 0s infinite normal;
     -moz-animation: circleMove 2s linear 0s infinite normal;	/* Firefox */
     -webkit-animation: circleMove 2s linear 0s infinite normal;	/* Safari 和 Chrome */
     -o-animation: circleMove 2s linear 0s infinite normal;	/* Opera */
+}
+.music.off {
+    display: none;
 }
 
 .bg-contents .scale {

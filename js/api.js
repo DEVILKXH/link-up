@@ -4,7 +4,7 @@ let Api = (function (){
 
     }
 
-    let host = "http://lrans.xin:8888/app"
+    let host = "http://120.42.152.31:8888/app"
     // let host = "http://localhost:8888/app"
 
     Api.prototype = {

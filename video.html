@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>连连看</title>
+</head>
+<body>
+  <video src="video/bg-video.mp3" webkit-playsinline="true" playsinline="true" x-webkit-airplay="true" x5-playsinline="true" x5-video-ignore-metadata="true" controls autoplay loop id="audio" class="audio"></video>
+</body>
+<script>
+let audio = document.getElementById('audio')
+audio.addEventListener('canplay', function () {
+  console.log('mp3 loading')
+  // audio.muted = false;
+  // audio.pause()
+  // audio.play()
+})
+document.addEventListener("WeixinJSBridgeReady", () => {
+    WeixinJSBridge.invoke('getNetworkType', {}, function () {
+      audio.play()
+    });
+});
+
+</script>
+</html>

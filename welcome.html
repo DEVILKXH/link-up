@@ -11,9 +11,48 @@
     .bg-contents { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url(bg/welcome.png); background-size: 100% 100%; }
     .loading{ position: absolute; width: 80%; height: 12rem; text-align: center; top: 0; left: 0; bottom: 0;right: 0; color: #fff; margin: auto;}
     .img{visibility: hidden;}
+    .music {position:absolute; top: 1rem; right: 1rem; width: 2rem; z-index: 2;border-radius: 2rem; border: 2px solid #3249d2} 
+    .music.on {
+        /* display: none; */
+        animation: circleMove 2s linear 0s infinite normal;
+        -moz-animation: circleMove 2s linear 0s infinite normal;	/* Firefox */
+        -webkit-animation: circleMove 2s linear 0s infinite normal;	/* Safari 和 Chrome */
+        -o-animation: circleMove 2s linear 0s infinite normal;	/* Opera */
+    }
+    .music.off{
+      display: none;
+    }
+    
+    .video{visibility: hidden;}
+    @keyframes circleMove{
+    0% {
+        transform:rotate(0deg);
+        -ms-transform:rotate(0deg); /* IE 9 */
+        -webkit-transform:rotate(0deg); /* Safari and Chrome */
+    }
+    50% {
+        transform:rotate(180deg);
+        -ms-transform:rotate(180deg); /* IE 9 */
+        -webkit-transform:rotate(180deg); /* Safari and Chrome */
+    }
+    100% {
+        transform:rotate(360deg);
+        -ms-transform:rotate(360deg); /* IE 9 */
+        -webkit-transform:rotate(360deg); /* Safari and Chrome */
+    }
+}
   </style>
 </head>
 <body>
+  <video src="video/bg-video.mp3" webkit-playsinline="true" playsinline="true" x-webkit-airplay="true" x5-playsinline="true" x5-video-ignore-metadata="true" id="video" class="video"></video>
+  <video src="video/biu.mp3" id="biu" class="biu music-bg"></video>
+  <video src="video/victory.mp3" id="victory" class="victory music-bg"></video>
+  <video src="video/fail.mp3" id="fail" class="fail music-bg"></video>
+  <video src="video/bomb.mp3" id="bomb" class="bomb music-bg"></video>
+
+
+  <!-- <img src="bg/music.png" class="music on" />
+  <img src="bg/music_off.png" class="music off" /> -->
   
   <div class="bg-contents">
     <div class="loading">
@@ -26,10 +65,8 @@
         <div class="img">
           
         </div>
+      </div>
     </div>
-  </div>
-  <audio src="video/bg-video.mp3" class="video" controls id="video" preload="auto" autoplay loop>
-  </audio>
 </body>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -40,20 +77,71 @@
 <script src="js/api.js"></script>
 <script src="js/user.js"></script>
 <script>
+
+
+  let video = document.getElementById('video');
+  let biu = document.getElementById('biu');
+  let victory = document.getElementById('victory');
+  let fail = document.getElementById('fail');
+  let bomb = document.getElementById('bomb');
   
+  let videoCount = 0;
+  video.addEventListener('canplay', function () {
+    console.log("loading success")
+    videoCount ++
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+  biu.addEventListener('canplay', function () {
+    console.log("loading success")
+    videoCount ++
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+  victory.addEventListener('canplay', function () {
+    console.log("loading success")
+    videoCount ++
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+  fail.addEventListener('canplay', function () {
+    console.log("loading success")
+    videoCount ++
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+
+  bomb.addEventListener('canplay', function () {
+    console.log("loading success")
+    videoCount ++
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+  
+
   let user = new User()
   let storage = new MyStorage()
   
   function getOpenId() {
+    // if(videoCount != 5 || index != img.length) {
+    //   return ;
+    // }
     if (undefined == storage.getItem(global.OPENID) || null == storage.getItem(global.OPENID)) {
       var code = getParamByUrl('code')
       if(code != '') {
         user.wechatLogin(code, function (){
-          window.location.href="/html/home.html"
+          window.location.href="/home.html"
         })
+      } else {
+        window.location.href="/home.html"
       }
     } else {
-      window.location.href="/html/home.html"
+      window.location.href="/home.html"
     }
   }
   
@@ -83,7 +171,7 @@
         return ;
       }
       let image = new Image();
-      let src = "http://www.lrans.xin/html/" + img[index];
+      let src = "http://110.88.192.180:8234/" + img[index];
       image.src = src;
       image.onload = function() {
         index ++;

@@ -15,18 +15,19 @@
     .bg-contents { background: url(bg/index.png); background-size: 100% 100%; }
     .dialog-content > div {flex-grow: 1; text-align: center;}
     .ui__content_body {color: #000}
+    .video{visibility: hidden;}
 </style>
 </head>
 <body>
-    <audio src="video/bg-video.mp3" muted autoplay loop class="audio"></audio>
+    <video src="video/bg-video.mp3" webkit-playsinline="true" playsinline="true" x-webkit-airplay="true" x5-playsinline="true" x5-video-ignore-metadata="true" controls autoplay loop id="audio" class="audio"></video>
     <img src="bg/music.png" class="music on" />
     <img src="bg/music_off.png" class="music off" />
     <div class="bg-contents">
         <img src="bg/timg.png" class='start scale'/>
         <img src="bg/view-rank.png" class='rank-content scale'/>
+
   </div>
   
-  <!-- <iframe src = "video/bg-video.mp3" allow = "autoplay" hidden class="iframe"></iframe> -->
 </body>
 
 <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
@@ -39,6 +40,19 @@
 <script src="js/user.js"></script>
 <script>
   
+  
+    let audio = document.getElementById('audio')
+    audio.addEventListener('canplay', function () {
+    console.log('mp3 loading')
+    // audio.muted = false;
+    // audio.pause()
+    // audio.play()
+    })
+    document.addEventListener("WeixinJSBridgeReady", () => {
+        WeixinJSBridge.invoke('getNetworkType', {}, function () {
+        audio.play()
+        });
+    });
   $(function () {
     
     // $("video[name=media]").loop = true
@@ -51,26 +65,23 @@
     $(".on").click(function () {
         $(".off").show()
         $(".on").hide()
-        $(".audio")[0].muted = true
-        $(".audio")[0].pause();
+        
+        // $(".audio", window.frames['iframe'].document)[0].muted  = true
+        audio.pause()
+        return false;
     })
 
     
     $(".off").click(function () {
         $(".off").hide()
         $(".on").show()
-        $(".audio")[0].muted = false
-        $(".audio")[0].play();
+        // $(".audio", window.frames['iframe'].document)[0].muted  = false
+        audio.play()
     })
-
-    // setTimeout(function () {
-
-    //     $(".off").click()
-    // }, 2000)
 
     $('.start').click(user.play)
     $('.rank-content').click(function () {
-      window.location = '/html/rank.html'
+      window.location = '/rank.html'
     })
 
     var api = new Api()
@@ -92,8 +103,8 @@
               wx.updateAppMessageShareData({ 
                   title: '一起连连看', // 分享标题
                   desc: '快来一起连连看吧', // 分享描述
-                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/img/0.png', // 分享图标
                   success: function () {
                       // alert({content: '分享成功'})
                   }
@@ -101,16 +112,16 @@
               wx.onMenuShareAppMessage({ 
                   title: '一起连连看', // 分享标题
                   desc: '快来一起连连看吧', // 分享描述
-                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/img/0.png', // 分享图标
                   success: function () {
                       // alert({content: '分享成功'})
                   }
               })
               wx.updateTimelineShareData({ 
                   title: '一起连连看', // 分享标题
-                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/img/0.png', // 分享图标
                   success: function () {
                       // 设置成功
                       // alert({content: '分享成功'})
@@ -118,8 +129,8 @@
               })
               wx.onMenuShareQZone({ 
                   title: '一起连连看', // 分享标题
-                  link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                  imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                  link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  imgUrl: window.origin + '/img/0.png', // 分享图标
                   success: function () {
                       // 设置成功
                       // alert({content: '分享成功'})

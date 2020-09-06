@@ -27,11 +27,11 @@ let User = (function () {
                             content: '您今天的游戏次数已经用完，分享可增加次数',
                             doneText: '确定',
                         }).then(() => {
-                            window.location = '/html/index.html'    
+                            window.location = '/index.html'    
                         })
                     } else {
                         if (true != type) {
-                            window.location = '/html/checkpoint.html'
+                            window.location = '/checkpoint.html'
                         }
                     }
                 }

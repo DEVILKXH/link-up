@@ -30,11 +30,19 @@ var Game = (function(){
     }
     var win = false
     var frozen = false
+    var pause = false
     var score = 0
     var active = {
         t: true,
         h: true,
         n: true,
+    }
+
+    let video = {
+        biu: $(".biu")[0] || undefined,
+        victory: $(".victory")[0] || undefined,
+        fail: $(".fail")[0] || undefined,
+        bomb: $(".bomb")[0] || undefined
     }
     var Game = function(){
         
@@ -56,6 +64,7 @@ var Game = (function(){
 
         init : function(){
             this.start();
+            this.view.initPointText()
             this.view.init(this,data);
             this.getMaxScore();
         },
@@ -110,8 +119,8 @@ var Game = (function(){
                 shareData = {
                     title: '一起连连看2', // 分享标题
                     desc: '快来一起连连看吧2', // 分享描述
-                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
+                    link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: window.origin + '/img/0.png', // 分享图标
                     success: function () {
                         alert({content: '分享成功'})
                     }
@@ -127,6 +136,7 @@ var Game = (function(){
             let offset = $(".boom-boom").offset()
             boom.animate({top: offset.top, left: offset.left}, 1000, 'linear',  () => {
                 boom.hide();
+                video.bomb.play()
                 $(".boom-boom").addClass("animate-active");
                 setTimeout( () => {
                     $(".boom-boom").removeClass("animate-active")
@@ -174,14 +184,14 @@ var Game = (function(){
             $("#pause").hide();
             $("#start").show();
             $(".current-time").stop()
-            frozen = true
+            pause = true
         },
 
         
         startGame: function () {
             $("#pause").show();
             $("#start").hide();
-            frozen = false
+            pause = false
             this.update()
         },
 
@@ -204,7 +214,7 @@ var Game = (function(){
             $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
         },
         _update: function () {
-            if (data.time == 0 || win || frozen) {
+            if (data.time == 0 || win || frozen || pause) {
                 return
             }
             this.updateTime();
@@ -304,6 +314,7 @@ var Game = (function(){
             this.getItem(after).val = null;
             this.view.removeItem(before);
             this.view.removeItem(after);
+            video.biu.play()
             pointConfig.itemCount -= 2;
             score += continueClick * 10
             score += 20
@@ -465,6 +476,9 @@ var Game = (function(){
         },
         
         judge : function(before,after, type){
+            if(pause) {
+                return false;
+            }
             var _this = this;
             var status = this.isConnectable(before,after);
             if (status && status.success) {           
@@ -520,14 +534,15 @@ var Game = (function(){
             window.location.reload()
         }, 
         closeDialog: function() {
-            $(".main-dialog").hide()
+            // $(".main-dialog").hide()
+            window.location = "/checkpoint.html"
         },
         winning: function () {
             win = true
             let that = this
             score += data.time * 20
             $(".time-panel").stop()
-
+            video.victory.play()
             setTimeout(function () {
                 $(".fail-text").hide()
                 $(".success-text").show()
@@ -540,6 +555,7 @@ var Game = (function(){
         },
         
         over: function () {
+            video.fail.play()
             $(".time-panel").stop()
             score = 0;
             $(".fail-text").show()
