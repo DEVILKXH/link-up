@@ -15,11 +15,11 @@
     .bg-contents { background: url(bg/index.png); background-size: 100% 100%; }
     .dialog-content > div {flex-grow: 1; text-align: center;}
     .ui__content_body {color: #000}
-    .video{visibility: hidden;}
+    .video,.music-bg{visibility: hidden; position: absolute; top: 100%; opacity: 0;}
 </style>
 </head>
 <body>
-    <video src="video/bg-video.mp3" webkit-playsinline="true" playsinline="true" x-webkit-airplay="true" x5-playsinline="true" x5-video-ignore-metadata="true" controls autoplay loop id="audio" class="audio"></video>
+    <audio src="video/bg-video.mp3" preload="auto"s autoplay loop id="audio" class="audio"></audio>
     <img src="bg/music.png" class="music on" />
     <img src="bg/music_off.png" class="music off" />
     <div class="bg-contents">

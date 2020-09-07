@@ -314,7 +314,6 @@ var Game = (function(){
             this.getItem(after).val = null;
             this.view.removeItem(before);
             this.view.removeItem(after);
-            video.biu.play()
             pointConfig.itemCount -= 2;
             score += continueClick * 10
             score += 20
@@ -486,6 +485,7 @@ var Game = (function(){
                     status.pos.unshift(before);
                     status.pos.push(after);
                     this.view.showLine(status.pos,function(){
+                        video.biu.play()
                         _this.removeItem(before,after);
                     });
                 }else{
