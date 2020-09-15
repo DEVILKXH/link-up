@@ -315,6 +315,7 @@ var Game = (function(){
             this.getItem(after).val = null;
             this.view.removeItem(before);
             this.view.removeItem(after);
+            pause = false
             pointConfig.itemCount -= 2;
             score += continueClick * 10
             score += 20
@@ -490,6 +491,7 @@ var Game = (function(){
                         _this.removeItem(before,after);
                     });
                 }else{
+                    pause = true;
                     this.removeItem(before,after);
                 }
                 return true;
