@@ -119,7 +119,7 @@ var Game = (function(){
                 shareData = {
                     title: '一起连连看2', // 分享标题
                     desc: '快来一起连连看吧2', // 分享描述
-                    link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    link: window.origin + '/game/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: window.origin + '/img/0.png', // 分享图标
                     success: function () {
                         alert({content: '分享成功'})
@@ -217,6 +217,7 @@ var Game = (function(){
             if (data.time == 0 || win || frozen || pause) {
                 return
             }
+            this.checkWinning()
             this.updateTime();
             window.requestAnimationFrame(this._update.bind(this));  
         },
@@ -535,7 +536,7 @@ var Game = (function(){
         }, 
         closeDialog: function() {
             // $(".main-dialog").hide()
-            window.location = "/checkpoint.html"
+            window.location = "/game/checkpoint.html"
         },
         winning: function () {
             win = true
@@ -585,6 +586,9 @@ var Game = (function(){
         },
 
         checkDeadlock: function () {
+            if(pointConfig.itemCount < 3) {
+                return ;
+            }
             var count = pointConfig.type;
             var cell = reduceDimension(data.cell);
             var filter = function (i) {

@@ -170,13 +170,13 @@
       var code = getParamByUrl('code')
       if(code != '') {
         user.wechatLogin(code, function (){
-          window.location.href="/home.html"
+          window.location.href="/game/home.html"
         })
       } else {
-        window.location.href="/home.html"
+        window.location.href="/game/home.html"
       }
     } else {
-      window.location.href="/home.html"
+      window.location.href="/game/home.html"
     }
   }
   
@@ -189,7 +189,7 @@
         return ;
       }
       let image = new Image();
-      let src = "http://120.42.152.31:8234/" + img[index];
+      let src = "http://llk.nazjsjc.com/game/" + img[index];
       image.src = src;
       image.onload = function() {
         index ++;

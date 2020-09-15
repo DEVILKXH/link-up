@@ -48,12 +48,12 @@
       if(code != '') {
         user.wechatLogin(code, function (){
           let openid = getParamByUrl('openId')
-          window.location.href="/friends.html?openId=" + openid
+          window.location.href="/game/friends.html?openId=" + openid
         })
       }
     } else {
       let openid = getParamByUrl('openId')
-      window.location.href="/friends.html?openId=" + openid
+      window.location.href="/game/friends.html?openId=" + openid
     }
   }
   
@@ -83,7 +83,7 @@
         return ;
       }
       let image = new Image();
-      let src = "http://120.42.152.31:8234/" + img[index];
+      let src = "http://llk.nazjsjc.com/game/" + img[index];
       image.src = src;
       image.onload = function() {
         index ++;
