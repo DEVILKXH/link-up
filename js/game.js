@@ -111,6 +111,9 @@ var Game = (function(){
         
         refresh: function () {
             let that = this
+            if(pause) {
+                setTimeout(this.refresh.bind(this), 500)
+            }
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
@@ -131,6 +134,9 @@ var Game = (function(){
         
         help: function () {
             let that = this
+            if(pause) {
+                setTimeout(this.help.bind(this), 500)
+            }
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
@@ -151,9 +157,13 @@ var Game = (function(){
 
         boom: function () {
             let that = this
+            if(pause) {
+                setTimeout(this.boom.bind(this), 500)
+            }
             if(moving) {
                 return 
             }
+
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
@@ -379,7 +389,6 @@ var Game = (function(){
         removeItem: function (before,after) {
             let timestamp = new Date().getTime()
             if (timestamp - clickTime < 500) {
-                console.log(data.time)
                 continueClick ++
                 clickTime = timestamp
                 data.time += 1
@@ -563,6 +572,7 @@ var Game = (function(){
             var status = this.isConnectable(before,after);
             if (status && status.success) {           
                 pause = true;
+                console.log('true')
                 if (true != type && status.pos.length>0){
                     status.pos.unshift(before);
                     status.pos.push(after);
@@ -700,7 +710,7 @@ var Game = (function(){
             var col = pointConfig.col
             var cell = (function () {
                 return reduceDimension(data.cell).filter(function (el) {
-                    return el.val !== 0 && el.val !== null; 
+                    return el.val !== null; 
                 });
             })();
             this.initCell();
