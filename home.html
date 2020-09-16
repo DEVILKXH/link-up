@@ -103,7 +103,7 @@
               wx.updateAppMessageShareData({ 
                   title: '一起连连看', // 分享标题
                   desc: '快来一起连连看吧', // 分享描述
-                  link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  link: window.origin + '/game/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                   imgUrl: window.origin + '/img/0.png', // 分享图标
                   success: function () {
                       // alert({content: '分享成功'})
@@ -112,7 +112,7 @@
               wx.onMenuShareAppMessage({ 
                   title: '一起连连看', // 分享标题
                   desc: '快来一起连连看吧', // 分享描述
-                  link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  link: window.origin + '/game/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                   imgUrl: window.origin + '/img/0.png', // 分享图标
                   success: function () {
                       // alert({content: '分享成功'})
@@ -120,7 +120,7 @@
               })
               wx.updateTimelineShareData({ 
                   title: '一起连连看', // 分享标题
-                  link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  link: window.origin + '/game/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                   imgUrl: window.origin + '/img/0.png', // 分享图标
                   success: function () {
                       // 设置成功
@@ -129,7 +129,7 @@
               })
               wx.onMenuShareQZone({ 
                   title: '一起连连看', // 分享标题
-                  link: window.origin + '/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                  link: window.origin + '/game/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                   imgUrl: window.origin + '/img/0.png', // 分享图标
                   success: function () {
                       // 设置成功
