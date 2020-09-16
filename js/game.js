@@ -71,8 +71,7 @@ var Game = (function(){
         init : function(){
             this.start();
             this.view.initPointText()
-            this.view.init(this,data);
-            this.view.initPointText()
+            this.view.init(this,data)
             this.view.initProps(helpCount, refreshCount, boomCount, frozenCount);
             this.getMaxScore();
         },
@@ -180,6 +179,7 @@ var Game = (function(){
             this.pause()
             moving = true
             boom.animate({top: offset.top, left: offset.left}, 1000, 'linear',  () => {
+                video.bomb.play()
                 boom.hide();
                 boomIndex = 1;
                 window.requestAnimationFrame(this.boomAnimate.bind(this));  
@@ -190,14 +190,13 @@ var Game = (function(){
             $(".boom-animate").hide()
             if(boomIndex > 4) {
                 $(".boom-boom").show()
-                video.bomb.play()
                 $(".boom-boom").addClass("animate-active");
                 setTimeout( () => {
                     $(".boom-boom").hide()
                     boomCount ++
                     hlepData.push(true)
-                    that.judge.apply(this, hlepData);
                     that.startGame()
+                    that.judge.apply(this, hlepData);
                     moving = false
                     that.view.initProp(config.maxHelpCount.boom - boomCount, $(".tips-boom"))
                 }, 500)
@@ -396,6 +395,7 @@ var Game = (function(){
             this.view.removeItem(after);
             pause = false
             pointConfig.itemCount -= 2;
+            console.log(pointConfig.itemCount)
             score += continueClick * 10
             score += 20
             this.view.updateScore(score)
@@ -562,6 +562,7 @@ var Game = (function(){
             var _this = this;
             var status = this.isConnectable(before,after);
             if (status && status.success) {           
+                pause = true;
                 if (true != type && status.pos.length>0){
                     status.pos.unshift(before);
                     status.pos.push(after);
@@ -569,8 +570,7 @@ var Game = (function(){
                         video.biu.play()
                         _this.removeItem(before,after);
                     });
-                }else{
-                    pause = true;
+                } else{
                     this.removeItem(before,after);
                 }
                 return true;

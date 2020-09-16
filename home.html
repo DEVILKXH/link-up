@@ -42,12 +42,7 @@
   
   
     let audio = document.getElementById('audio')
-    audio.addEventListener('canplay', function () {
-    console.log('mp3 loading')
-    // audio.muted = false;
-    // audio.pause()
-    // audio.play()
-    })
+    
     document.addEventListener("WeixinJSBridgeReady", () => {
         WeixinJSBridge.invoke('getNetworkType', {}, function () {
         audio.play()

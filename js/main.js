@@ -3,7 +3,6 @@ on(window,'load',function(){
     var user = new User()
     user.play(true)
     
-    var game = new Game();
     game.setup();
 
     event(game);
