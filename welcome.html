@@ -8,16 +8,55 @@
   <title>连连看</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
-    .bg-contents { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url(bg/welcome.png); background-size: 100% 100%; }
+    .bg-contents { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url(bg/welcome.png); background-size: 100% 100%; overflow: hidden;}
     .loading{ position: absolute; width: 80%; height: 12rem; text-align: center; top: 0; left: 0; bottom: 0;right: 0; color: #fff; margin: auto;}
     .img{visibility: hidden;}
+    .music {position:absolute; top: 1rem; right: 1rem; width: 2rem; z-index: 2;border-radius: 2rem; border: 2px solid #3249d2} 
+    .music.on {
+        /* display: none; */
+        animation: circleMove 2s linear 0s infinite normal;
+        -moz-animation: circleMove 2s linear 0s infinite normal;	/* Firefox */
+        -webkit-animation: circleMove 2s linear 0s infinite normal;	/* Safari 和 Chrome */
+        -o-animation: circleMove 2s linear 0s infinite normal;	/* Opera */
+    }
+    .music.off{
+      display: none;
+    }
+    
+    .bg,.music-bg{visibility: hidden;}
+    @keyframes circleMove{
+    0% {
+        transform:rotate(0deg);
+        -ms-transform:rotate(0deg); /* IE 9 */
+        -webkit-transform:rotate(0deg); /* Safari and Chrome */
+    }
+    50% {
+        transform:rotate(180deg);
+        -ms-transform:rotate(180deg); /* IE 9 */
+        -webkit-transform:rotate(180deg); /* Safari and Chrome */
+    }
+    100% {
+        transform:rotate(360deg);
+        -ms-transform:rotate(360deg); /* IE 9 */
+        -webkit-transform:rotate(360deg); /* Safari and Chrome */
+    }
+}
   </style>
 </head>
 <body>
+  <audio src="video/bg-video.mp3" id="bg" class="bg" muted autoplay preload="auto"></audio>
+  <audio src="video/biu.mp3" id="biu" class="biu music-bg"  muted autoplay preload="auto"></audio>
+  <audio src="video/victory.mp3" id="victory" class="victory music-bg"  muted autoplay preload="auto"></audio>
+  <audio src="video/fail.mp3" id="fail" class="fail music-bg" muted autoplay preload="auto"></audio>
+  <audio src="video/bomb.mp3" id="bomb" class="bomb music-bg" muted autoplay preload="auto"></audio>
+
+
+  <!-- <img src="bg/music.png" class="music on" />
+  <img src="bg/music_off.png" class="music off" /> -->
   
   <div class="bg-contents">
     <div class="loading">
-        <h3>正在加载</h3>
+        <h3>正在加载(<span class="current"></span>/<span class="total"></span>)</h3>
         <div class="progress">
           <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
             <span class="sr-only"></span>
@@ -26,10 +65,8 @@
         <div class="img">
           
         </div>
+      </div>
     </div>
-  </div>
-  <audio src="video/bg-video.mp3" class="video" controls id="video" preload="auto" autoplay loop>
-  </audio>
 </body>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -40,26 +77,20 @@
 <script src="js/api.js"></script>
 <script src="js/user.js"></script>
 <script>
+
+
+  let video = document.getElementById('bg');
+  let biu = document.getElementById('biu');
+  let victory = document.getElementById('victory');
+  let fail = document.getElementById('fail');
+  let bomb = document.getElementById('bomb');
   
-  let user = new User()
-  let storage = new MyStorage()
+  let videoCount = 0;
+  let current = 0
   
-  function getOpenId() {
-    if (undefined == storage.getItem(global.OPENID) || null == storage.getItem(global.OPENID)) {
-      var code = getParamByUrl('code')
-      if(code != '') {
-        user.wechatLogin(code, function (){
-          window.location.href="/html/home.html"
-        })
-      }
-    } else {
-      window.location.href="/html/home.html"
-    }
-  }
-  
-  $(function() {
-    
-    let img = [
+  let index = 0;
+
+  let img = [
       "bg/add_one.png", "bg/aword.png", "bg/bg-content.png", "bg/bg-rank.png", "bg/bg-score.png", "bg/bg.jpg", 
       "bg/boom-boom.png", "bg/boom.png", "bg/close.png", "bg/coin_bg.jpg", "bg/count-1.png", "bg/count-2.png", 
       "bg/count-3.png","bg/go.png", "bg/dw_bg.jpg", "bg/fail-text.png", "bg/first-bg.png", "bg/frozen.png", "bg/game-over.png", 
@@ -68,14 +99,93 @@
       "bg/point-3.png", "bg/point-4.png", "bg/point-5.png", "bg/point-6.png", "bg/point-7.png", "bg/point-8.png", 
       "bg/point-9.png", "bg/point-text-end.png", "bg/point-text-first.png", "bg/point-text.png", "bg/rank-bg.png",
       "bg/rank-text-2.png", "bg/rank-text.png", "bg/refresh.png", "bg/score-text.png", "bg/score.png", 
+<<<<<<< HEAD
       "bg/sc_bg.jpg", "bg/second-bg.png", "bg/sg_bg.jpg", "bg/socre-text.png", "bg/start-active.png", "boom-1.png","boom-2.png","boom-3.png","boom-4.png",
+=======
+      "bg/sc_bg.jpg", "bg/second-bg.png", "bg/sg_bg.jpg", "bg/socre-text.png", "bg/start-active.png", "bg/music.png",
+>>>>>>> origin/master
       "bg/start-unactive.png", "bg/start.png", "bg/success-aword.png", "bg/success-text.png", "bg/third-bg.png", 
       "bg/time-full.png", "bg/time-move.png", "bg/timg.png", "bg/tip.png", "bg/view-rank.png", "bg/welcome.png","bg/index.png",
       "img/0.png","img/1.png","img/2.png","img/3.png","img/4.png","img/5.png","img/6.png","img/7.png","img/8.png",
       "img/9.png","img/10.png","img/11.png","img/12.png","img/13.png","img/14.png","img/15.png","img/16.png",
       "img/17.png","img/18.png","img/19.png","img/20.png","img/21.png","img/22.png"
     ];
-    let index = 0;
+
+  video.addEventListener('canplay', function () {
+    console.log("video loading success")
+    videoCount ++
+    current ++
+        $(".current").text(current)
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+  biu.addEventListener('canplay', function () {
+    console.log("biu loading success")
+    videoCount ++
+    
+    current ++
+        $(".current").text(current)
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+  victory.addEventListener('canplay', function () {
+    console.log("victory loading success")
+    videoCount ++
+    
+    current ++
+        $(".current").text(current)
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+  fail.addEventListener('canplay', function () {
+    console.log("fial loading success")
+    videoCount ++
+    
+    current ++
+        $(".current").text(current)
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+
+  bomb.addEventListener('canplay', function () {
+    console.log("bomb loading success")
+    videoCount ++
+    
+    current ++
+        $(".current").text(current)
+    if(videoCount == 5) {
+      getOpenId()
+    }
+  })
+  
+
+  let user = new User()
+  let storage = new MyStorage()
+  $(".total").text(img.length + 5)
+  function getOpenId() {
+    if(index != img.length) {
+      return ;
+    }
+    if (undefined == storage.getItem(global.OPENID) || null == storage.getItem(global.OPENID)) {
+      var code = getParamByUrl('code')
+      if(code != '') {
+        user.wechatLogin(code, function (){
+          window.location.href="/game/home.html"
+        })
+      } else {
+        window.location.href="/game/home.html"
+      }
+    } else {
+      window.location.href="/game/home.html"
+    }
+  }
+  
+  $(function() {
+    
     
     function load() {
       if(index == img.length) {
@@ -83,10 +193,13 @@
         return ;
       }
       let image = new Image();
-      let src = "http://www.lrans.xin/html/" + img[index];
+      let src = "http://llk.nazjsjc.com/game/" + img[index];
       image.src = src;
       image.onload = function() {
         index ++;
+        
+        current ++
+        $(".current").text(current)
         $(".img").append(`<img src="${src}">`)
         load()
       }

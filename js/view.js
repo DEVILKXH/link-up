@@ -12,6 +12,7 @@ var View = (function(){
     var openId = storage.getItem(global.OPENID)
     var currentPoint = storage.getItem(global.CURRENT_POINT)
     var level, totalTime
+    var pause = false
     
     if (undefined == currentPoint || null == currentPoint) {
         currentPoint = 1;
@@ -50,7 +51,6 @@ var View = (function(){
         updateScore: function (score) {
             $(".current-score").text(score);
         },
-
         updateTime: function (time, continueClick) {
             timeDom.innerHTML = time;
             if (continueClick != undefined) {

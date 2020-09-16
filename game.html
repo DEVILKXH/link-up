@@ -10,10 +10,19 @@
   <title>连连看</title>
   <style>
       /* body {background: url(bg/game-bg.png); background-size: 100% 100%;} */
+      .container{overflow: hidden;}
       .dialog-content{
           display: flex;
           flex-direction: row;
       }
+      .music {position:absolute; top: 1rem; right: 1rem; width: 2rem; z-index: 2;border-radius: 2rem; border: 2px solid #3249d2} 
+      .music.on {
+        animation: circleMove 2s linear 0s infinite normal;
+        -moz-animation: circleMove 2s linear 0s infinite normal;	/* Firefox */
+        -webkit-animation: circleMove 2s linear 0s infinite normal;	/* Safari 和 Chrome */
+        -o-animation: circleMove 2s linear 0s infinite normal;	/* Opera */
+     }
+     .music.off{display: none;}
       .header{height: 8rem;}
       .point-text {margin: 0 1rem;}
       .current-point-text {margin: 0 0.2rem}
@@ -79,7 +88,8 @@
       .boom-4 {width: 5rem;}
 
       .animate-active {opacity: 1; z-index: 0; animation: boom 2s linear 0s 1 alternate; -moz-animation: boom 2s linear 0s 1 alternate;	/* Firefox */ -webkit-animation: boom 2s linear 0s 1 alternate;	/* Safari 和 Chrome */ -o-animation: boom 2s linear 0s 1 alternate;}
-
+      .video,.music-bg {visibility: hidden; position: absolute; z-index: -2; top: 100%; opacity: 0;}
+      .grid-item-direction.up > div.y, .grid-item-direction.down > div.y {width: 1px;}
       @keyframes changeSize{
         0% {
             transform:scale(0.8);
@@ -110,11 +120,37 @@
             -webkit-transform:scale(1); /* Safari and Chrome */
         }
      }
+     @keyframes circleMove{
+    0% {
+        transform:rotate(0deg);
+        -ms-transform:rotate(0deg); /* IE 9 */
+        -webkit-transform:rotate(0deg); /* Safari and Chrome */
+    }
+    50% {
+        transform:rotate(180deg);
+        -ms-transform:rotate(180deg); /* IE 9 */
+        -webkit-transform:rotate(180deg); /* Safari and Chrome */
+    }
+    100% {
+        transform:rotate(360deg);
+        -ms-transform:rotate(360deg); /* IE 9 */
+        -webkit-transform:rotate(360deg); /* Safari and Chrome */
+    }
+}
   </style>
 </head>
 
 <body>
+    
+    <img src="bg/music.png" class="music on" />
+    <img src="bg/music_off.png" class="music off" />
+    
     <div class="container">
+        <audio src="video/bg-video.mp3" preload="auto"s autoplay loop id="video" class="video"></audio>
+        <audio src="video/biu.mp3" class="biu music-bg" preload="auto"></audio>
+        <audio src="video/victory.mp3" class="victory music-bg" preload="auto"></audio>
+        <audio src="video/fail.mp3" class="fail music-bg" preload="auto"></audio>
+        <audio src="video/bomb.mp3" class="bomb music-bg" preload="auto"></audio>
         <div class="header">
             <div class="current-point">
                 
@@ -239,6 +275,35 @@
     <script src="js/main.js?v=1324"></script>
 </body>
 <script>
+    let audio = document.getElementById('video')
+    audio.addEventListener('canplay', function () {
+        console.log('mp3 loading')
+        // audio.muted = false;
+        // audio.pause()
+        // audio.play()
+    })
+    document.addEventListener("WeixinJSBridgeReady", () => {
+        WeixinJSBridge.invoke('getNetworkType', {}, function () {
+            audio.play()
+        });
+    });
+    $(function () {
+
+        $(".on").click(function () {
+            $(".off").show()
+            $(".on").hide()
+            audio.pause()
+            return false
+        })
+
+        
+        $(".off").click(function () {
+            $(".off").hide()
+            $(".on").show()
+            audio.play()
+        })
+    })
+
     var api = new Api()
     var storage = new MyStorage()
     var game = new Game()
@@ -246,8 +311,8 @@
     let shareData = { 
         title: '一起连连看', // 分享标题
         desc: '快来一起连连看吧', // 分享描述
-        link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl: window.origin + '/html/img/0.png', // 分享图标
+        link: window.origin + '/game/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: window.origin + '/img/0.png', // 分享图标
         success: function () {
             game.updateProp()
             alert({content: '分享成功'})

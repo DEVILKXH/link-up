@@ -32,6 +32,7 @@ var Game = (function(){
     }
     var win = false
     var frozen = false
+    var pause = false
     var score = 0
     var active = {
         t: true,
@@ -41,6 +42,13 @@ var Game = (function(){
     var boomIndex = 0
     var propType
     var moving = false
+
+    let video = {
+        biu: $(".biu")[0] || undefined,
+        victory: $(".victory")[0] || undefined,
+        fail: $(".fail")[0] || undefined,
+        bomb: $(".bomb")[0] || undefined
+    }
     var Game = function(){
         
     };
@@ -62,6 +70,7 @@ var Game = (function(){
 
         init : function(){
             this.start();
+            this.view.initPointText()
             this.view.init(this,data);
             this.view.initPointText()
             this.view.initProps(helpCount, refreshCount, boomCount, frozenCount);
@@ -181,6 +190,8 @@ var Game = (function(){
             $(".boom-animate").hide()
             if(boomIndex > 4) {
                 $(".boom-boom").show()
+                video.bomb.play()
+                $(".boom-boom").addClass("animate-active");
                 setTimeout( () => {
                     $(".boom-boom").hide()
                     boomCount ++
@@ -250,14 +261,14 @@ var Game = (function(){
             $("#pause").hide();
             $("#start").show();
             $(".current-time").stop()
-            frozen = true
+            pause = true
         },
 
         
         startGame: function () {
             $("#pause").show();
             $("#start").hide();
-            frozen = false
+            pause = false
             this.update()
         },
 
@@ -282,9 +293,10 @@ var Game = (function(){
             $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
         },
         _update: function () {
-            if (data.time == 0 || win || frozen) {
+            if (data.time == 0 || win || frozen || pause) {
                 return
             }
+            this.checkWinning()
             this.updateTime();
             window.requestAnimationFrame(this._update.bind(this));  
         },
@@ -382,6 +394,7 @@ var Game = (function(){
             this.getItem(after).val = null;
             this.view.removeItem(before);
             this.view.removeItem(after);
+            pause = false
             pointConfig.itemCount -= 2;
             score += continueClick * 10
             score += 20
@@ -543,6 +556,9 @@ var Game = (function(){
         },
         
         judge : function(before,after, type){
+            if(pause) {
+                return false;
+            }
             var _this = this;
             var status = this.isConnectable(before,after);
             if (status && status.success) {           
@@ -550,9 +566,11 @@ var Game = (function(){
                     status.pos.unshift(before);
                     status.pos.push(after);
                     this.view.showLine(status.pos,function(){
+                        video.biu.play()
                         _this.removeItem(before,after);
                     });
                 }else{
+                    pause = true;
                     this.removeItem(before,after);
                 }
                 return true;
@@ -598,14 +616,15 @@ var Game = (function(){
             window.location.reload()
         }, 
         closeDialog: function() {
-            $(".main-dialog").hide()
+            // $(".main-dialog").hide()
+            window.location = "/game/checkpoint.html"
         },
         winning: function () {
             win = true
             let that = this
             score += data.time * 20
             $(".time-panel").stop()
-
+            video.victory.play()
             setTimeout(function () {
                 $(".fail-text").hide()
                 $(".success-text").show()
@@ -618,6 +637,7 @@ var Game = (function(){
         },
         
         over: function () {
+            video.fail.play()
             $(".time-panel").stop()
             score = 0;
             $(".fail-text").show()
@@ -647,6 +667,9 @@ var Game = (function(){
         },
 
         checkDeadlock: function () {
+            if(pointConfig.itemCount < 3) {
+                return ;
+            }
             var count = pointConfig.type;
             var cell = reduceDimension(data.cell);
             var filter = function (i) {

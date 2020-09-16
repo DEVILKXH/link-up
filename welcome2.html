@@ -11,6 +11,7 @@
     .bg-contents { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url(bg/welcome.png); background-size: 100% 100%; }
     .loading{ position: absolute; width: 80%; height: 12rem; text-align: center; top: 0; left: 0; bottom: 0;right: 0; color: #fff; margin: auto;}
     .img{visibility: hidden;}
+    /* .audio {opacity: 0;} */
   </style>
 </head>
 <body>
@@ -47,12 +48,12 @@
       if(code != '') {
         user.wechatLogin(code, function (){
           let openid = getParamByUrl('openId')
-          window.location.href="/html/friends.html?openId=" + openid
+          window.location.href="/game/friends.html?openId=" + openid
         })
       }
     } else {
       let openid = getParamByUrl('openId')
-      window.location.href="/html/friends.html?openId=" + openid
+      window.location.href="/game/friends.html?openId=" + openid
     }
   }
   
@@ -67,7 +68,7 @@
       "bg/point-3.png", "bg/point-4.png", "bg/point-5.png", "bg/point-6.png", "bg/point-7.png", "bg/point-8.png", 
       "bg/point-9.png", "bg/point-text-end.png", "bg/point-text-first.png", "bg/point-text.png", "bg/rank-bg.png",
       "bg/rank-text-2.png", "bg/rank-text.png", "bg/refresh.png", "bg/score-text.png", "bg/score.png", 
-      "bg/sc_bg.jpg", "bg/second-bg.png", "bg/sg_bg.jpg", "bg/socre-text.png", "bg/start-active.png", 
+      "bg/sc_bg.jpg", "bg/second-bg.png", "bg/sg_bg.jpg", "bg/socre-text.png", "bg/start-active.png", "bg/music.png",
       "bg/start-unactive.png", "bg/start.png", "bg/success-aword.png", "bg/success-text.png", "bg/third-bg.png", 
       "bg/time-full.png", "bg/time-move.png", "bg/timg.png", "bg/tip.png", "bg/view-rank.png","bg/welcome.png","bg/index.png",
       "img/0.png","img/1.png","img/2.png","img/3.png","img/4.png","img/5.png","img/6.png","img/7.png","img/8.png",
@@ -82,7 +83,7 @@
         return ;
       }
       let image = new Image();
-      let src = "http://www.lrans.xin/html/" + img[index];
+      let src = "http://llk.nazjsjc.com/game/" + img[index];
       image.src = src;
       image.onload = function() {
         index ++;

@@ -9,11 +9,16 @@
   <link rel="stylesheet" href="css/index.css">
   <style>
     .bg-contents {overflow: auto;}
+    .video{visibility: hidden; position: absolute; top: 100%; opacity: 0; opacity: 0;}
   </style>
   <style>
 </style>
 </head>
 <body>
+  <video src="video/bg-video.mp3" webkit-playsinline="true" playsinline="true" x-webkit-airplay="true" x5-playsinline="true" x5-video-ignore-metadata="true" controls autoplay loop id="audio" class="audio"></video>
+  <img src="bg/music.png" class="music on" />
+  <img src="bg/music_off.png" class="music off" />
+  
   <div class="bg-contents">
     <div class="point-list">
       
@@ -32,7 +37,37 @@
 <script src="js/view.js"></script>
 <script src="js/game.js"></script>
 <script>
+  let audio = document.getElementById('audio')
+  audio.addEventListener('canplay', function () {
+    console.log('mp3 loading')
+    // audio.muted = false;
+    // audio.pause()
+    // audio.play()
+  })
+  document.addEventListener("WeixinJSBridgeReady", () => {
+    WeixinJSBridge.invoke('getNetworkType', {}, function () {
+      audio.play()
+    });
+  });
   $(function () {
+
+    $(".on").click(function () {
+      $(".off").show()
+      $(".on").hide()
+      audio.pause();
+      return false
+    })
+
+    
+    $(".off").click(function () {
+      $(".off").hide()
+      $(".on").show()
+      audio.play();
+    })
+
+
+
+
     let view = new View()
     let game = new Game()
     let storage = new MyStorage()
@@ -42,7 +77,7 @@
       let $this = $(this)
       let point = $this.attr('data-index')
       storage.setItem(global.CURRENT_POINT, point)
-      location.href = 'game.html'
+      location.href = '/game/game.html'
     })
   })
 

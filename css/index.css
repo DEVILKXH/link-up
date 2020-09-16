@@ -23,8 +23,18 @@
     bottom: 15%;
 }
 
+.music {position:absolute; top: 1rem; right: 1rem; width: 2rem; z-index: 2;border-radius: 2rem; border: 2px solid #3249d2} 
+.music.on {
+    animation: circleMove 2s linear 0s infinite normal;
+    -moz-animation: circleMove 2s linear 0s infinite normal;	/* Firefox */
+    -webkit-animation: circleMove 2s linear 0s infinite normal;	/* Safari 和 Chrome */
+    -o-animation: circleMove 2s linear 0s infinite normal;	/* Opera */
+}
+.music.off {
+    display: none;
+}
+
 .bg-contents .scale {
-    
     animation: changeSize 2s linear 0s infinite alternate;
     -moz-animation: changeSize 2s linear 0s infinite alternate;	/* Firefox */
     -webkit-animation: changeSize 2s linear 0s infinite alternate;	/* Safari 和 Chrome */
@@ -80,5 +90,23 @@
         transform:scale(0.8);
         -ms-transform:scale(0.8); /* IE 9 */
         -webkit-transform:scale(0.8); /* Safari and Chrome */
+    }
+}
+
+@keyframes circleMove{
+    0% {
+        transform:rotate(0deg);
+        -ms-transform:rotate(0deg); /* IE 9 */
+        -webkit-transform:rotate(0deg); /* Safari and Chrome */
+    }
+    50% {
+        transform:rotate(180deg);
+        -ms-transform:rotate(180deg); /* IE 9 */
+        -webkit-transform:rotate(180deg); /* Safari and Chrome */
+    }
+    100% {
+        transform:rotate(360deg);
+        -ms-transform:rotate(360deg); /* IE 9 */
+        -webkit-transform:rotate(360deg); /* Safari and Chrome */
     }
 }
