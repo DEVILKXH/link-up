@@ -32,7 +32,7 @@
       .time-score-pause .time-score .time .time-frozen img {width: 100%; height: 100%}
       .time-score-pause .time-score .current-time {width: 100%; overflow: hidden; border-radius: 2rem; height: 2rem;}
       .time-score-pause .time-score .current-time img{min-width: 100%}
-      .time-score-pause .time-score .score {display: inline-block; background: url(/bg/score.png); margin-top: 1rem; border-radius: 2rem; padding: 0 1rem}
+      .time-score-pause .time-score .score {display: inline-block; background: url(/bg/score.png); margin-top: 1rem; border-radius: 2rem; padding: 0 1rem; height: 2rem;}
       .time-score-pause .pause img {height: 4rem;}
       .time-score-pause .time-score span  {display: inline-block; font-size: 1.2rem; line-height: 2rem; color: #fdf5d6; font-weight: bold;     vertical-align: middle;}
       .dialog-content > div {flex-grow: 1; text-align: center;}
@@ -55,9 +55,10 @@
       .grid-container {background-image: url(bg/bg-content.png); background-size: 100% 100%; margin: 0 1rem 1rem;}
       
       .prop {display: flex; flex-direction: row; height: 4rem;}
-      .prop > div{text-align: center; width: 25%;}
+      .prop > div{text-align: center; width: 25%;; position: relative;}
       .prop img {height: 4rem;}
       .prop img + img {margin-left: 0.5rem}
+      .tips {position: absolute;  background: red; width: 1.5rem; height: 1.5rem; border-radius: 1.52rem; line-height: 1.5rem; right: 0.45rem; top: -0.5rem; font-weight: bold;}
       /* .grid-item{border: 1px solid #fff !important;} */
       
       .frozen-move {display: none; width: 3rem; height: 3rem; position: absolute; left: 0; top: 0;}
@@ -69,7 +70,14 @@
       .grid-item-content img {width: 100%; height: 100%;}
       #start{display: none}
       .boom {position: absolute; top: 0; left: 0; width: 4rem; display: none;}
-      .boom-boom {position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; width: 6rem; opacity: 0; z-index: -1}
+      .boom-animate, .boom-boom-pos {position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; width: 6rem; z-index: 1;}
+      .boom-boom-pos {opacity: 0; z-index: -1}
+      .boom-animate{display: none}
+      .boom-1 {width: 2rem;}
+      .boom-2 {width: 3rem;}
+      .boom-3 {width: 4rem;}
+      .boom-4 {width: 5rem;}
+
       .animate-active {opacity: 1; z-index: 0; animation: boom 2s linear 0s 1 alternate; -moz-animation: boom 2s linear 0s 1 alternate;	/* Firefox */ -webkit-animation: boom 2s linear 0s 1 alternate;	/* Safari 和 Chrome */ -o-animation: boom 2s linear 0s 1 alternate;}
 
       @keyframes changeSize{
@@ -142,15 +150,19 @@
         <div class="footer prop">
             <div>
                 <img src="bg/tip.png" id="help" />
+                <span class="tips tips-help"></span>
             </div>
             <div>
                 <img src="bg/refresh.png" id="refresh"/>
+                <span class="tips tips-refresh"></span>
             </div>
             <div>
                 <img src="bg/boom.png" id="boom" />
+                <span class="tips tips-boom"></span>
             </div>
             <div>
                 <img src="bg/hourglass.png" id="frozen"/>
+                <span class="tips tips-frozen"></span>
             </div>
         </div>
         
@@ -159,8 +171,13 @@
     <div class="frozen-move">
         <div class="frozen-body"></div>
     </div>
+    <img src="bg/boom-1.png" class="boom-animate boom-1" />
+    <img src="bg/boom-2.png" class="boom-animate boom-2" />
+    <img src="bg/boom-3.png" class="boom-animate boom-3" />
+    <img src="bg/boom-4.png" class="boom-animate boom-4" />
     <img src="bg/boom.png" class="boom" />
-    <img src="bg/boom-boom.png" class="boom-boom" />
+    <img src="bg/boom-boom.png" class="boom-animate boom-boom" />
+    <img src="bg/boom-boom.png" class="boom-boom-pos" />
     <div class="count-down">
         <div class="content">
             <img src="bg/count-3.png" class="count-down-img count-1"/>
@@ -224,6 +241,7 @@
 <script>
     var api = new Api()
     var storage = new MyStorage()
+    var game = new Game()
     let openId = storage.getItem(global.OPENID)
     let shareData = { 
         title: '一起连连看', // 分享标题
@@ -231,7 +249,8 @@
         link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
         imgUrl: window.origin + '/html/img/0.png', // 分享图标
         success: function () {
-            // alert({content: '分享成功'})
+            game.updateProp()
+            alert({content: '分享成功'})
         }
     }
     api.post({

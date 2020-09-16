@@ -4,6 +4,8 @@ var Game = (function(){
     
     var refreshCount = 0
     var helpCount = 0
+    var frozenCount = 0
+    var boomCount = 0
     
     var timeCooldown = 60
     
@@ -36,6 +38,9 @@ var Game = (function(){
         h: true,
         n: true,
     }
+    var boomIndex = 0
+    var propType
+    var moving = false
     var Game = function(){
         
     };
@@ -52,11 +57,14 @@ var Game = (function(){
             this.fillCell();
             this.checkDeadlock();
             this.view.init(this,data);
+            this.view.initProps(helpCount, refreshCount, boomCount, frozenCount);
         },
 
         init : function(){
             this.start();
             this.view.init(this,data);
+            this.view.initPointText()
+            this.view.initProps(helpCount, refreshCount, boomCount, frozenCount);
             this.getMaxScore();
         },
 
@@ -67,55 +75,90 @@ var Game = (function(){
             // this.update();
         },
 
+        updateProp: function() {
+            var count = 0
+            if(propType == 'help') {
+                helpCount --
+                count = config.maxHelpCount.help - helpCount
+            }
+            if(propType == 'refresh') {
+                refreshCount --
+                count = config.maxHelpCount.help - refreshCount
+            }
+            if(propType == 'boom') {
+                boomCount --
+                count = config.maxHelpCount.boom - boomCount
+            }
+            if(propType == 'frozen') {
+                frozenCount --
+                count = config.maxHelpCount.frozen - frozenCount
+            }
+            this.view.initProp(count, $(".tips-" + propType))
+        },
+
         restart: function () {
             location.reload();  
         },
 
         
         refresh: function () {
+            let that = this
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
             }
-            if (helpCount < config.maxHelpCount){
-                helpCount ++
+            if (refreshCount < config.maxHelpCount.refresh){
+                refreshCount ++
                 this.randomReset()
+                this.view.initProp(config.maxHelpCount.refresh - refreshCount, $(".tips-refresh"))
             } else {
-                alert({title: '', content: '<div style="text-align: center">每日刷新已经达到上限</div>'})
+                confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
+                    that.pause()
+                    propType = 'refresh'
+                }).catch( () => {
+                    console.log('cancel')
+                })
             }
         },
         
         help: function () {
+            let that = this
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
             }
-            if (helpCount < config.maxHelpCount){
+            if (helpCount < config.maxHelpCount.help){
                 helpCount ++
                 this.judge.apply(this, hlepData);
+                this.view.initProp(config.maxHelpCount.help - helpCount, $(".tips-help"))
             } else {
-                alert({title: '', content:'<div style="text-align: center">每日帮助已经达到上限</div>'})
+                confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
+                    that.pause()
+                    propType = 'help'
+                }).catch( () => {
+                    console.log('cancel')
+                })
             }
         },
 
         boom: function () {
+            let that = this
+            if(moving) {
+                return 
+            }
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
             }
-            if (helpCount < config.maxHelpCount){
+            if (boomCount < config.maxHelpCount.boom){
                 this.startBoom()
             } else {
-                alert({title: '', content:'<div style="text-align: center">每日帮助已经达到上限</div>'})
-                shareData = {
-                    title: '一起连连看2', // 分享标题
-                    desc: '快来一起连连看吧2', // 分享描述
-                    link: window.origin + '/html/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: window.origin + '/html/img/0.png', // 分享图标
-                    success: function () {
-                        alert({content: '分享成功'})
-                    }
-                }
+                confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
+                    that.pause()
+                    propType = 'boom'
+                }).catch( () => {
+                    console.log('cancel')
+                })
             }
         },
         startBoom: function () {
@@ -124,17 +167,35 @@ var Game = (function(){
             let boom2 = $("#boom")
             boom.show()
             boom.offset(boom2.offset())
-            let offset = $(".boom-boom").offset()
+            let offset = $(".boom-boom-pos").offset()
+            this.pause()
+            moving = true
             boom.animate({top: offset.top, left: offset.left}, 1000, 'linear',  () => {
                 boom.hide();
-                $(".boom-boom").addClass("animate-active");
+                boomIndex = 1;
+                window.requestAnimationFrame(this.boomAnimate.bind(this));  
+            })
+        },
+        boomAnimate: function () {
+            let that = this
+            $(".boom-animate").hide()
+            if(boomIndex > 4) {
+                $(".boom-boom").show()
                 setTimeout( () => {
-                    $(".boom-boom").removeClass("animate-active")
-                    helpCount ++
+                    $(".boom-boom").hide()
+                    boomCount ++
                     hlepData.push(true)
                     that.judge.apply(this, hlepData);
-                }, 1000)
-            })
+                    that.startGame()
+                    moving = false
+                    that.view.initProp(config.maxHelpCount.boom - boomCount, $(".tips-boom"))
+                }, 500)
+            } else {
+                $(".boom-" + boomIndex).show()
+                boomIndex ++
+                setTimeout(this.boomAnimate.bind(this), 200)
+            }
+            
         },
         getMaxScore: function () {
             var openId = storage.getItem(global.OPENID)
@@ -147,19 +208,34 @@ var Game = (function(){
             })
         },
         frozen: function () {
+            var that = this
+            if(moving) {
+                return 
+            }
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
             }
-            frozen = true
-            $(".current-time").stop()
-            var offset = $("#frozen").offset()
-            var offset2 = $(".current-time").offset()
-            var dot = offset.top * offset2.top + offset.left * offset2.left
-            var det = offset.left * offset2.top + offset.top * offset2.left
-            var angle = Math.floor(Math.atan2(det, dot) / Math.PI * 180) - 10
-            $(".frozen-move").offset(offset).css("transform", "rotate(-"+ angle +"deg)").fadeIn()
-            this.move()
+            if (frozenCount < config.maxHelpCount.frozen){
+                frozenCount ++
+                frozen = true
+                moving = true
+                $(".current-time").stop()
+                var offset = $("#frozen").offset()
+                var offset2 = $(".current-time").offset()
+                var dot = offset.top * offset2.top + offset.left * offset2.left
+                var det = offset.left * offset2.top + offset.top * offset2.left
+                var angle = Math.floor(Math.atan2(det, dot) / Math.PI * 180) - 10
+                $(".frozen-move").offset(offset).css("transform", "rotate(-"+ angle +"deg)").fadeIn()
+                this.move()
+            } else {
+                confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
+                    that.pause()
+                    propType = 'frozen'
+                }).catch( () => {
+                    console.log('cancel')
+                })
+            }            
         },
         move: function () {
             var offset = $(".current-time").offset()
@@ -188,8 +264,10 @@ var Game = (function(){
 
         stop: function () {
             $(".frozen-move").fadeOut().removeClass("active")
+            this.view.initProp(config.maxHelpCount.frozen - frozenCount, $(".tips-frozen"))
             let that = this
             setTimeout(function () {
+                moving = false
                 frozen = false
                 $(".time-frozen").fadeOut()
                 that.update()

@@ -25,7 +25,6 @@ var View = (function(){
 
         init : function(g,data){
             game = g;
-            this.initPointText()
             // this.updateTime(data.time);
             this.initGrid(data.cell);
         },
@@ -38,6 +37,15 @@ var View = (function(){
             }
             html = `<img src="bg/point-text-first.png" class='point-text'/>` + html + `<img src="bg/point-text-end.png" class='point-text'/>`;
             $(".current-point").append(html)
+        },
+        initProps:  function (helpCount, refreshCount, boomCount, frozenCount) {
+            this.initProp(config.maxHelpCount.help - helpCount, $(".tips-help"))
+            this.initProp(config.maxHelpCount.refresh - refreshCount, $(".tips-refresh"))
+            this.initProp(config.maxHelpCount.boom - boomCount, $(".tips-boom"))
+            this.initProp(config.maxHelpCount.frozen - frozenCount, $(".tips-frozen"))
+        },
+        initProp:  function (count, $obj) {
+            $obj.text(count)
         },
         updateScore: function (score) {
             $(".current-score").text(score);

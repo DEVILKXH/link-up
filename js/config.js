@@ -1,6 +1,11 @@
 
 var config = (function(){
-    var maxHelpCount = 30;
+    var maxHelpCount = {
+        refresh: 1,
+        frozen: 1,
+        boom: 1,
+        help: 1,
+    };
     var imgUrl = "./img/";
     var imgExtension = ".png";
     var imgByName = function (name) {
