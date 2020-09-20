@@ -15,7 +15,7 @@
 </style>
 </head>
 <body>
-  <video src="video/bg-video.mp3" webkit-playsinline="true" playsinline="true" x-webkit-airplay="true" x5-playsinline="true" x5-video-ignore-metadata="true" controls autoplay loop id="audio" class="audio"></video>
+  <video src="video/bg-video.mp3" webkit-playsinline="true" playsinline="true" x-webkit-airplay="true" x5-playsinline="true" x5-video-ignore-metadata="true" loop id="audio" class="audio"></video>
   <img src="bg/music.png" class="music on" />
   <img src="bg/music_off.png" class="music off" />
   
@@ -37,6 +37,7 @@
 <script src="js/view.js"></script>
 <script src="js/game.js"></script>
 <script>
+  let storage = new MyStorage()
   let audio = document.getElementById('audio')
   audio.addEventListener('canplay', function () {
     console.log('mp3 loading')
@@ -44,17 +45,29 @@
     // audio.pause()
     // audio.play()
   })
-  document.addEventListener("WeixinJSBridgeReady", () => {
-    WeixinJSBridge.invoke('getNetworkType', {}, function () {
-      audio.play()
+
+  var silence = storage.getItem("silence")
+  if(silence != 'true') {
+    document.addEventListener("WeixinJSBridgeReady", () => {
+      WeixinJSBridge.invoke('getNetworkType', {}, function () {
+        audio.play()
+      });
     });
-  });
+    
+    $(".off").hide()
+    $(".on").show()
+  } else {
+    $(".off").show()
+    $(".on").hide()
+    audio.pause()
+  }
   $(function () {
 
     $(".on").click(function () {
       $(".off").show()
       $(".on").hide()
       audio.pause();
+      storage.setItem("silence", 'true')
       return false
     })
 
@@ -63,6 +76,7 @@
       $(".off").hide()
       $(".on").show()
       audio.play();
+      storage.setItem("silence", 'false')
     })
 
 
@@ -70,7 +84,6 @@
 
     let view = new View()
     let game = new Game()
-    let storage = new MyStorage()
     view.initPoint()
 
     $(".point-list").on('click', '.point-active', function () {

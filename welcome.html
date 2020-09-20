@@ -162,6 +162,16 @@
 
   let user = new User()
   let storage = new MyStorage()
+  
+  var silence = storage.getItem("silence");
+  if(silence == 'false') {
+    $(".off").hide()
+    $(".on").show()
+  } else {
+    $(".off").show()
+    $(".on").hide()
+  }
+
   $(".total").text(img.length + 5)
   function getOpenId() {
     if(index != img.length) {

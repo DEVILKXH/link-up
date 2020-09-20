@@ -1,11 +1,12 @@
-.main-dialog {
+.main-dialog,.share-dialog {
     display: none;
     position: absolute;
     top: 0;
     left: 0; 
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.7)
+    background: rgba(0,0,0,0.7);
+    z-index: 2
 }
 .dialog-body {
     position: fixed;
@@ -102,4 +103,25 @@
     height: 3rem;
     text-align: center;
     margin-top: 0.5rem
+}
+
+.share-dialog .share {
+    position: absolute;
+    right: 0.5rem;
+    animation: move 2s linear 0s infinite alternate; 
+    -moz-animation: move 2s linear 0s infinite alternate;	/* Firefox */ 
+    -webkit-animation: move 2s linear 0s infinite alternate;	/* Safari 和 Chrome */ 
+    -o-animation: move 2s linear 0s infinite alternate;
+}
+
+@keyframes move {
+    0% {
+        right: 0.5rem;
+    }
+    50% {
+        right: 1rem;
+    }
+    100% {
+        right: 0.5rem;
+    }
 }
