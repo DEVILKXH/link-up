@@ -26,5 +26,3 @@ var config = (function(){
         itemDirectionHTML: itemDirectionHTML,
     }
 })();
-
-var game = new Game()
