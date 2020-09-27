@@ -10,7 +10,8 @@ var Game = (function(){
     var timeCooldown = 60
     
     var hlepData = []
-    
+    var maxScore = 0
+    var totalScore = 0;
     var api = new Api()
     var storage = new MyStorage()
     var currentPoint = storage.getItem(global.CURRENT_POINT)
@@ -34,6 +35,7 @@ var Game = (function(){
     var frozen = false
     var pause = false
     var score = 0
+    var totalScoreShow = 0;
     var active = {
         t: true,
         h: true,
@@ -69,11 +71,11 @@ var Game = (function(){
         },
 
         init : function(){
+            this.getMaxScore();
             this.start();
             this.view.initPointText()
             this.view.init(this,data)
             this.view.initProps(helpCount, refreshCount, boomCount, frozenCount);
-            this.getMaxScore();
         },
 
         start : function(){
@@ -81,6 +83,10 @@ var Game = (function(){
             this.fillCell();
             this.checkDeadlock();
             // this.update();
+        },
+
+        checkView: function () {
+            this.view.checkView()
         },
 
         updateProp: function() {
@@ -111,9 +117,7 @@ var Game = (function(){
         
         refresh: function () {
             let that = this
-            if(pause) {
-                setTimeout(this.refresh.bind(this), 500)
-            }
+            
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
@@ -123,20 +127,19 @@ var Game = (function(){
                 this.randomReset()
                 this.view.initProp(config.maxHelpCount.refresh - refreshCount, $(".tips-refresh"))
             } else {
+                that.pause()
                 confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
-                    that.pause()
                     propType = 'refresh'
+                    $(".share-dialog").show()
                 }).catch( () => {
                     console.log('cancel')
+                    that.startGame()
                 })
             }
         },
         
         help: function () {
             let that = this
-            if(pause) {
-                setTimeout(this.help.bind(this), 500)
-            }
             if(win || data.time == 0) {
                 alert({title: '', content: '<div style="text-align: center">游戏结束</div>'})
                 return ;
@@ -146,20 +149,19 @@ var Game = (function(){
                 this.judge.apply(this, hlepData);
                 this.view.initProp(config.maxHelpCount.help - helpCount, $(".tips-help"))
             } else {
+                that.pause()
                 confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
-                    that.pause()
                     propType = 'help'
+                    $(".share-dialog").show()
                 }).catch( () => {
                     console.log('cancel')
+                    that.startGame()
                 })
             }
         },
 
         boom: function () {
             let that = this
-            if(pause) {
-                setTimeout(this.boom.bind(this), 500)
-            }
             if(moving) {
                 return 
             }
@@ -171,11 +173,13 @@ var Game = (function(){
             if (boomCount < config.maxHelpCount.boom){
                 this.startBoom()
             } else {
+                that.pause()
                 confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
-                    that.pause()
                     propType = 'boom'
+                    $(".share-dialog").show()
                 }).catch( () => {
                     console.log('cancel')
+                    that.startGame()
                 })
             }
         },
@@ -189,7 +193,9 @@ var Game = (function(){
             this.pause()
             moving = true
             boom.animate({top: offset.top, left: offset.left}, 1000, 'linear',  () => {
-                video.bomb.play()
+                if(storage.getItem("silence") == 'false') {
+                    video.bomb.play()
+                }
                 boom.hide();
                 boomIndex = 1;
                 window.requestAnimationFrame(this.boomAnimate.bind(this));  
@@ -223,7 +229,12 @@ var Game = (function(){
                 url: '/score/getMaxScore',
                 data: JSON.stringify({openId: openId, point: currentPoint}),
                 success: res => {
-                    $(".best-score-num").text(res.result)
+                    maxScore = res.result.max
+                    totalScore = res.result.total
+                    totalScoreShow = totalScore
+                    
+                    this.view.updateScore(totalScoreShow);
+                    $(".best-score-num").text(maxScore + totalScore)
                 }
             })
         },
@@ -249,11 +260,13 @@ var Game = (function(){
                 $(".frozen-move").offset(offset).css("transform", "rotate(-"+ angle +"deg)").fadeIn()
                 this.move()
             } else {
+                that.pause()
                 confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
-                    that.pause()
                     propType = 'frozen'
+                    $(".share-dialog").show()
                 }).catch( () => {
                     console.log('cancel')
+                    that.startGame()
                 })
             }            
         },
@@ -407,7 +420,8 @@ var Game = (function(){
             console.log(pointConfig.itemCount)
             score += continueClick * 10
             score += 20
-            this.view.updateScore(score)
+            totalScoreShow += 20;
+            this.view.updateScore(totalScoreShow)
             this.checkWinning();
         },
         isEmpty : function(obj){
@@ -577,7 +591,9 @@ var Game = (function(){
                     status.pos.unshift(before);
                     status.pos.push(after);
                     this.view.showLine(status.pos,function(){
-                        video.biu.play()
+                        if(storage.getItem("silence") == 'false') {
+                            video.biu.play()
+                        }
                         _this.removeItem(before,after);
                     });
                 } else{
@@ -633,21 +649,26 @@ var Game = (function(){
             win = true
             let that = this
             score += data.time * 20
+            totalScoreShow += data.time * 20
             $(".time-panel").stop()
-            video.victory.play()
+            if(storage.getItem("silence") == 'false') {
+                video.victory.play()
+            }
             setTimeout(function () {
                 $(".fail-text").hide()
                 $(".success-text").show()
                 $(".next-point").show()
                 $(".dialog-aword").show()
-                $(".dialog-score-result").text(score)
+                $(".dialog-score-result").text(totalScoreShow)
                 $(".main-dialog").show()
                 that.saveScore()
             }, 50);
         },
         
         over: function () {
-            video.fail.play()
+            if(storage.getItem("silence") == 'false') {
+                video.fail.play()
+            }
             $(".time-panel").stop()
             score = 0;
             $(".fail-text").show()

@@ -146,7 +146,7 @@
     <img src="bg/music_off.png" class="music off" />
     
     <div class="container">
-        <audio src="video/bg-video.mp3" preload="auto"s autoplay loop id="video" class="video"></audio>
+        <audio src="video/bg-video.mp3" preload="auto" loop id="video" class="video"></audio>
         <audio src="video/biu.mp3" class="biu music-bg" preload="auto"></audio>
         <audio src="video/victory.mp3" class="victory music-bg" preload="auto"></audio>
         <audio src="video/fail.mp3" class="fail music-bg" preload="auto"></audio>
@@ -258,7 +258,9 @@
             </div>
         </div>
     </div>
-
+    <div class="share-dialog">
+        <img src="bg/share.png" class="share">
+    </div>
     <script src="js/jquery.min.js"></script>
     <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script src="js/alert.js?v=1324"></script>
@@ -275,6 +277,11 @@
     <script src="js/main.js?v=1324"></script>
 </body>
 <script>
+    
+    var api = new Api()
+    var storage = new MyStorage()
+    var game = new Game()
+
     let audio = document.getElementById('video')
     audio.addEventListener('canplay', function () {
         console.log('mp3 loading')
@@ -282,17 +289,31 @@
         // audio.pause()
         // audio.play()
     })
-    document.addEventListener("WeixinJSBridgeReady", () => {
+
+    
+    var silence = storage.getItem("silence")
+    if(silence != 'true') {
+        document.addEventListener("WeixinJSBridgeReady", () => {
         WeixinJSBridge.invoke('getNetworkType', {}, function () {
             audio.play()
         });
-    });
+        });
+        
+        $(".off").hide()
+        $(".on").show()
+    } else {
+        $(".off").show()
+        $(".on").hide()
+        
+        audio.pause()
+    }
     $(function () {
 
         $(".on").click(function () {
             $(".off").show()
             $(".on").hide()
             audio.pause()
+            storage.setItem("silence", "true")
             return false
         })
 
@@ -301,12 +322,15 @@
             $(".off").hide()
             $(".on").show()
             audio.play()
+            storage.setItem("silence", 'false')
+        })
+
+        $(".share-dialog").click(function () {
+            $(".share-dialog").hide()
+            game.startGame()
         })
     })
 
-    var api = new Api()
-    var storage = new MyStorage()
-    var game = new Game()
     let openId = storage.getItem(global.OPENID)
     let shareData = { 
         title: '一起连连看', // 分享标题

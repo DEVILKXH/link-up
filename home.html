@@ -19,7 +19,7 @@
 </style>
 </head>
 <body>
-    <audio src="video/bg-video.mp3" preload="auto"s autoplay loop id="audio" class="audio"></audio>
+    <audio src="video/bg-video.mp3" preload="auto" loop id="audio" class="audio"></audio>
     <img src="bg/music.png" class="music on" />
     <img src="bg/music_off.png" class="music off" />
     <div class="bg-contents">
@@ -40,14 +40,24 @@
 <script src="js/user.js"></script>
 <script>
   
-  
+    var storage = new MyStorage()  
     let audio = document.getElementById('audio')
     
-    document.addEventListener("WeixinJSBridgeReady", () => {
-        WeixinJSBridge.invoke('getNetworkType', {}, function () {
-        audio.play()
+    var silence = storage.getItem("silence")
+    if(silence != 'true') {
+        document.addEventListener("WeixinJSBridgeReady", () => {
+            WeixinJSBridge.invoke('getNetworkType', {}, function () {
+            audio.play()
+            });
         });
-    });
+        $(".off").hide()
+        $(".on").show()
+    } else {
+        $(".off").show()
+        $(".on").hide()
+        
+        audio.pause()
+    }
   $(function () {
     
     // $("video[name=media]").loop = true
@@ -63,6 +73,7 @@
         
         // $(".audio", window.frames['iframe'].document)[0].muted  = true
         audio.pause()
+        storage.setItem("silence", 'true')
         return false;
     })
 
@@ -72,6 +83,7 @@
         $(".on").show()
         // $(".audio", window.frames['iframe'].document)[0].muted  = false
         audio.play()
+        storage.setItem("silence", 'false')
     })
 
     $('.start').click(user.play)

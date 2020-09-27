@@ -48,6 +48,12 @@ var View = (function(){
         initProp:  function (count, $obj) {
             $obj.text(count)
         },
+        checkView: function () {
+            var len = $(".grid-item").length - $(".grid-item.hidden").length
+            if(len != level.itemCount) {
+                window.location.reload()
+            }
+        },
         updateScore: function (score) {
             $(".current-score").text(score);
         },

@@ -9,6 +9,7 @@ on(window,'load',function(){
     var content = $(".content")[0]
     // content.parentNode.style.display = 'none'
     // content.innerHTML = 3
+    game.checkView()
     
     $(".count-1").show()
     content.parentNode.style.display = 'block'
