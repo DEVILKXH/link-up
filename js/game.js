@@ -75,7 +75,14 @@ var Game = (function(){
             this.start();
             this.view.initPointText()
             this.view.init(this,data)
-            this.initProp();
+            let that = this
+            api.post({
+                url: '/user/logLogin',
+                data: openId,
+                success: function (response) {
+                    that.initProp();
+                }
+            })
         },
 
         start : function(){
@@ -101,7 +108,7 @@ var Game = (function(){
                             if(attr == 'BOOM') {
                                 config.maxHelpCount.boom = result[attr]
                             }
-                            if(attr == 'HOURGLASS') {
+                            if(attr == 'FROZEN') {
                                 config.maxHelpCount.frozen = result[attr]
                             }
                             if(attr == 'REFRESH') {
@@ -719,7 +726,7 @@ var Game = (function(){
             if(storage.getItem("silence") == 'false') {
                 video.victory.play()
             }
-            let props = ["help", "refresh", "boom", "hourglass"]
+            let props = ["help", "refresh", "boom", "frozen"]
             let index = Math.floor(Math.random() * 4)
             setTimeout(function () {
                 $(".fail-text").hide()
@@ -729,6 +736,11 @@ var Game = (function(){
                 $(".dialog-score-result").text(totalScoreShow)
                 $(".main-dialog").show()
                 $(".aword").attr("src", "bg/" + props[index] + ".png")
+                if(currentPoint % 5 == 0) {
+                    let index2 = Math.floor(Math.random() * 4)
+                    $(".dialog-aword").append(`<img src="bg/${index2}.png"/> <img src="bg/add_one.png" />`)
+                    that.saveAword(props[index2])
+                }
                 that.saveScore()
                 that.saveAword(props[index])
             }, 50);
