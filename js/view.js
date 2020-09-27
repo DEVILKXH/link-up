@@ -46,6 +46,9 @@ var View = (function(){
             this.initProp(config.maxHelpCount.frozen - frozenCount, $(".tips-frozen"))
         },
         initProp:  function (count, $obj) {
+            if(undefined == count) {
+                count = 0
+            }
             $obj.text(count)
         },
         checkView: function () {

@@ -75,7 +75,7 @@ var Game = (function(){
             this.start();
             this.view.initPointText()
             this.view.init(this,data)
-            this.view.initProps(helpCount, refreshCount, boomCount, frozenCount);
+            this.initProp();
         },
 
         start : function(){
@@ -85,12 +85,68 @@ var Game = (function(){
             // this.update();
         },
 
+        initProp: function() {
+            let that = this
+            var openId = storage.getItem(global.OPENID)
+            api.post({
+                url: '/score/groupCount',
+                data: JSON.stringify({openId: openId}),
+                success: function (res) {
+                    if(res.code == 200) {
+                        let result = res.result;
+                        for(let attr in result) {
+                            if(attr == 'HELP') {
+                                config.maxHelpCount.help = result[attr]
+                            }
+                            if(attr == 'BOOM') {
+                                config.maxHelpCount.boom = result[attr]
+                            }
+                            if(attr == 'HOURGLASS') {
+                                config.maxHelpCount.frozen = result[attr]
+                            }
+                            if(attr == 'REFRESH') {
+                                config.maxHelpCount.refresh = result[attr]
+                            }
+                        }
+                        that.view.initProps(helpCount, refreshCount, boomCount, frozenCount);
+                    }
+                }
+            })
+        },
+
+        saveLog: function(propType) {
+            var openId = storage.getItem(global.OPENID)
+            api.post({
+                url: '/log/save',
+                data: JSON.stringify({openId: openId, type: propType.toUpperCase()}),
+            })
+        },
+
+        share: function () {
+            let that = this
+            let shareData = { 
+                title: '一起连连看', // 分享标题
+                desc: '快来一起连连看吧', // 分享描述
+                link: window.origin + '/game/share.html?propType='+ propType +'&openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: window.origin + '/game/img/0.png', // 分享图标
+                success: function () {
+                    // that.updateProp()
+                    console.log({content: '分享成功'})
+                }
+            }
+            wx.updateAppMessageShareData(shareData) 
+            wx.onMenuShareAppMessage(shareData)
+            wx.updateTimelineShareData(shareData)
+            wx.onMenuShareQZone(shareData)
+        },
+
         checkView: function () {
             this.view.checkView()
         },
 
         updateProp: function() {
             var count = 0
+            console.log(propType)
             if(propType == 'help') {
                 helpCount --
                 count = config.maxHelpCount.help - helpCount
@@ -124,6 +180,7 @@ var Game = (function(){
             }
             if (refreshCount < config.maxHelpCount.refresh){
                 refreshCount ++
+                this.saveLog('refresh')
                 this.randomReset()
                 this.view.initProp(config.maxHelpCount.refresh - refreshCount, $(".tips-refresh"))
             } else {
@@ -131,6 +188,7 @@ var Game = (function(){
                 confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
                     propType = 'refresh'
                     $(".share-dialog").show()
+                    that.share()
                 }).catch( () => {
                     console.log('cancel')
                     that.startGame()
@@ -146,13 +204,16 @@ var Game = (function(){
             }
             if (helpCount < config.maxHelpCount.help){
                 helpCount ++
+                this.saveLog('help')
                 this.judge.apply(this, hlepData);
                 this.view.initProp(config.maxHelpCount.help - helpCount, $(".tips-help"))
+
             } else {
                 that.pause()
                 confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
                     propType = 'help'
                     $(".share-dialog").show()
+                    that.share()
                 }).catch( () => {
                     console.log('cancel')
                     that.startGame()
@@ -171,12 +232,14 @@ var Game = (function(){
                 return ;
             }
             if (boomCount < config.maxHelpCount.boom){
+                this.saveLog('boom')
                 this.startBoom()
             } else {
                 that.pause()
                 confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
                     propType = 'boom'
                     $(".share-dialog").show()
+                    that.share()
                 }).catch( () => {
                     console.log('cancel')
                     that.startGame()
@@ -249,6 +312,7 @@ var Game = (function(){
             }
             if (frozenCount < config.maxHelpCount.frozen){
                 frozenCount ++
+                this.saveLog('frozen')
                 frozen = true
                 moving = true
                 $(".current-time").stop()
@@ -264,6 +328,7 @@ var Game = (function(){
                 confirm({title: '', content:'<div style="text-align: center">每日帮助已经达到上限,分享可增加次数</div>', cancelText: '取消', doneText: '去分享'}).then(() => {
                     propType = 'frozen'
                     $(".share-dialog").show()
+                    that.share()
                 }).catch( () => {
                     console.log('cancel')
                     that.startGame()
@@ -404,7 +469,7 @@ var Game = (function(){
             if (timestamp - clickTime < 500) {
                 continueClick ++
                 clickTime = timestamp
-                data.time += 1
+                // data.time += 1
                 // this.view.updateTime(data.time)
                 this.startCountDown()
             } else {
@@ -650,10 +715,12 @@ var Game = (function(){
             let that = this
             score += data.time * 20
             totalScoreShow += data.time * 20
-            $(".time-panel").stop()
+            $(".current-time").stop()
             if(storage.getItem("silence") == 'false') {
                 video.victory.play()
             }
+            let props = ["help", "refresh", "boom", "hourglass"]
+            let index = Math.floor(Math.random() * 4)
             setTimeout(function () {
                 $(".fail-text").hide()
                 $(".success-text").show()
@@ -661,7 +728,9 @@ var Game = (function(){
                 $(".dialog-aword").show()
                 $(".dialog-score-result").text(totalScoreShow)
                 $(".main-dialog").show()
+                $(".aword").attr("src", "bg/" + props[index] + ".png")
                 that.saveScore()
+                that.saveAword(props[index])
             }, 50);
         },
         
@@ -669,7 +738,7 @@ var Game = (function(){
             if(storage.getItem("silence") == 'false') {
                 video.fail.play()
             }
-            $(".time-panel").stop()
+            $(".current-time").stop()
             score = 0;
             $(".fail-text").show()
             $(".success-text").hide()
@@ -687,6 +756,16 @@ var Game = (function(){
                 url: '/score/save',
                 data: JSON.stringify({openId: openId, point: currentPoint, score: score}),
                 success: sucFn
+            })
+        },
+        saveAword: function (propType) {
+            var openId = storage.getItem(global.OPENID)
+            api.post({
+                url: '/share/info/save',
+                data: JSON.stringify({openId: openId, shareType: propType}),
+                success: function (res) {
+                    
+                }
             })
         },
         checkWinning: function () {

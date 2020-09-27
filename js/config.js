@@ -1,10 +1,10 @@
 
 var config = (function(){
     var maxHelpCount = {
-        refresh: 1,
-        frozen: 1,
-        boom: 1,
-        help: 1,
+        refresh: 0,
+        frozen: 0,
+        boom: 0,
+        help: 0,
     };
     var imgUrl = "./img/";
     var imgExtension = ".png";

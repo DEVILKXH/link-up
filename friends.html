@@ -47,25 +47,17 @@
   let user = new User()
   let storage = new MyStorage()
   let api = new Api()
-  getOpenId()
+  save()
   logo()
   init()
-  
 
-  function getOpenId() {
-    if (undefined == storage.getItem(global.OPENID) || null == storage.getItem(global.OPENID)) {
-      var code = getParamByUrl('code')
-      if(code != '') {
-        user.wechatLogin(code,save)
-      }
-    }
-  }
 
   function init() {
     let openId = getParamByUrl('openId')
+    let type = getParamByUrl('propType')
     api.post({
       url: '/share/info/getShareInfo',
-      data: openId,
+      data: JSON.stringify({openId: openId, shareType: type}),
       success: function (res) {
         for (let i = 0; i < res.result.length; i ++) {
           let html = `<ul> <li class='index'>${i + 1}</li> <li class='img'><img src="${res.result[i].userLogo}" /></li> <li class='name'>${res.result[i].userName}</li> <li class='date'>${res.result[i].shareDate}</li> </ul>`
@@ -90,14 +82,15 @@
   function save() {
 
     let openId = getParamByUrl('openId')
+    let propType = getParamByUrl('propType')
     let shareOpenId = storage.getItem(global.OPENID)
-    // if (openId == shareOpenId) {
-    //   return ;
-    // }
+    if (openId == shareOpenId) {
+      return ;
+    }
 
     api.post({
       url: '/share/info/save',
-      data: JSON.stringify({openId: openId, shareOpenId: shareOpenId}),
+      data: JSON.stringify({openId: openId, shareOpenId: shareOpenId, shareType: propType}),
       success: function (res) {
         alert({content: '<div style="text-align: center" >'+ res.result +'</div>'}).then(() => {
           init()

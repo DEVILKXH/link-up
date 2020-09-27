@@ -47,13 +47,13 @@
       var code = getParamByUrl('code')
       if(code != '') {
         user.wechatLogin(code, function (){
-          let openid = getParamByUrl('openId')
-          window.location.href="/game/friends.html?openId=" + openid
+          let param = window.location.href.split("?")[1]
+          window.location.href="/game/friends.html?" + param
         })
       }
     } else {
-      let openid = getParamByUrl('openId')
-      window.location.href="/game/friends.html?openId=" + openid
+      let param = window.location.href.split("?")[1]
+      window.location.href="/game/friends.html?" + param
     }
   }
   

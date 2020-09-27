@@ -146,7 +146,7 @@
     <img src="bg/music_off.png" class="music off" />
     
     <div class="container">
-        <audio src="video/bg-video.mp3" preload="auto" loop id="video" class="video"></audio>
+        <audio src="video/bg-video.mp3" preload="auto"s autoplay loop id="video" class="video"></audio>
         <audio src="video/biu.mp3" class="biu music-bg" preload="auto"></audio>
         <audio src="video/victory.mp3" class="victory music-bg" preload="auto"></audio>
         <audio src="video/fail.mp3" class="fail music-bg" preload="auto"></audio>
@@ -241,7 +241,7 @@
             </div>
             <div class="dialog-aword">
                 <img src="bg/success-aword.png" />
-                <img src="bg/refresh.png" />
+                <img src="bg/refresh.png" class="aword"/>
                 <img src="bg/add_one.png" />
             </div>
             <div class="dialog-best-score">
@@ -258,9 +258,11 @@
             </div>
         </div>
     </div>
+
     <div class="share-dialog">
-        <img src="bg/share.png" class="share">
+        <img src="bg/share.png" class="share"/>
     </div>
+
     <script src="js/jquery.min.js"></script>
     <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script src="js/alert.js?v=1324"></script>
@@ -278,10 +280,7 @@
 </body>
 <script>
     
-    var api = new Api()
     var storage = new MyStorage()
-    var game = new Game()
-
     let audio = document.getElementById('video')
     audio.addEventListener('canplay', function () {
         console.log('mp3 loading')
@@ -289,8 +288,6 @@
         // audio.pause()
         // audio.play()
     })
-
-    
     var silence = storage.getItem("silence")
     if(silence != 'true') {
         document.addEventListener("WeixinJSBridgeReady", () => {
@@ -304,7 +301,6 @@
     } else {
         $(".off").show()
         $(".on").hide()
-        
         audio.pause()
     }
     $(function () {
@@ -312,8 +308,8 @@
         $(".on").click(function () {
             $(".off").show()
             $(".on").hide()
-            audio.pause()
-            storage.setItem("silence", "true")
+            audio.pause();
+            storage.setItem("silence", 'true')
             return false
         })
 
@@ -321,7 +317,7 @@
         $(".off").click(function () {
             $(".off").hide()
             $(".on").show()
-            audio.play()
+            audio.play();
             storage.setItem("silence", 'false')
         })
 
@@ -331,17 +327,9 @@
         })
     })
 
+    var api = new Api()
+    var game = new Game()
     let openId = storage.getItem(global.OPENID)
-    let shareData = { 
-        title: '一起连连看', // 分享标题
-        desc: '快来一起连连看吧', // 分享描述
-        link: window.origin + '/game/share.html?openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl: window.origin + '/game/img/0.png', // 分享图标
-        success: function () {
-            game.updateProp()
-            console.log({content: '分享成功'})
-        }
-    }
     api.post({
         url: '/user/sign',
         data: window.location.href,
@@ -356,14 +344,6 @@
                 signature: response.result.sign,// 必填，签名
                 jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', ,'onMenuShareAppMessage', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表
             });
-
-            wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
-                wx.updateAppMessageShareData(shareData) 
-                wx.onMenuShareAppMessage(shareData)
-                wx.updateTimelineShareData(shareData)
-                wx.onMenuShareQZone(shareData)
-            });
-
         }
     })
 </script>
