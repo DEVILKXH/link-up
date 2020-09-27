@@ -42,7 +42,7 @@ var Game = (function(){
         n: true,
     }
     var boomIndex = 0
-    var propType
+    var propType = 'GAME'
     var moving = false
 
     let video = {

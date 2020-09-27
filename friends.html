@@ -12,6 +12,7 @@
         display: flex;
         flex-direction: row;
     }
+    .bg-contents { background: url(bg/index.png); background-size: 100% 100%; }
     .dialog-content > div {flex-grow: 1; text-align: center;}
     .ui__content_body {color: #000}
     .bg-contents {display: flex; flex-direction: column;}
@@ -24,6 +25,8 @@
     .body ul li.date {width: 8rem;}
     .body ul li.name {text-align: left; flex-grow: 1;}
     .body ul li img {height: 2rem; border-radius: 2rem;}
+    .footer {height: 5rem; text-align: center;}
+    .start-game {height: 100%;}
 </style>
 </head>
 <body>
@@ -33,6 +36,9 @@
     </div>
     <div class="body">
       
+    </div>
+    <div class="footer">
+      <img src="bg/timg.png" class='start-game'/>
     </div>
   </div>
 </body>
@@ -52,6 +58,8 @@
   init()
 
 
+  $(".start-game").click (user.play)
+
   function init() {
     let openId = getParamByUrl('openId')
     let type = getParamByUrl('propType')
@@ -59,6 +67,7 @@
       url: '/share/info/getShareInfo',
       data: JSON.stringify({openId: openId, shareType: type}),
       success: function (res) {
+        $(".body").html('')
         for (let i = 0; i < res.result.length; i ++) {
           let html = `<ul> <li class='index'>${i + 1}</li> <li class='img'><img src="${res.result[i].userLogo}" /></li> <li class='name'>${res.result[i].userName}</li> <li class='date'>${res.result[i].shareDate}</li> </ul>`
           $(".body").append(html)
@@ -85,6 +94,7 @@
     let propType = getParamByUrl('propType')
     let shareOpenId = storage.getItem(global.OPENID)
     if (openId == shareOpenId) {
+      window.location.href = '/game/home.html'
       return ;
     }
 
@@ -93,7 +103,8 @@
       data: JSON.stringify({openId: openId, shareOpenId: shareOpenId, shareType: propType}),
       success: function (res) {
         alert({content: '<div style="text-align: center" >'+ res.result +'</div>'}).then(() => {
-          init()
+          // init()
+          window.location.href = '/game/home.html'
         })
       }
     })
