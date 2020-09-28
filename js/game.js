@@ -390,9 +390,9 @@ var Game = (function(){
             })
         },
         _update: function () {
-            
             this.checkWinning()
-            if (data.time == 0 || win || frozen || pause) {
+            if (win || frozen || pause) {
+                console.log(win + "-" + frozen + "-" + pause)
                 return
             }
             this.updateTime();
@@ -482,7 +482,7 @@ var Game = (function(){
                 clickTime = timestamp
                 // data.time += 1
                 // this.view.updateTime(data.time)
-                this.startCountDown()
+                // this.startCountDown()
             } else {
                 continueClick = 0
                 clickTime = timestamp
@@ -675,6 +675,7 @@ var Game = (function(){
                 } else{
                     this.removeItem(before,after);
                 }
+                pause = false;
                 return true;
             }else{
                 return false;
@@ -731,6 +732,7 @@ var Game = (function(){
                 video.victory.play()
             }
             let props = ["help", "refresh", "boom", "frozen"]
+            let props2 = ["tips", "refresh", "boom", "hourglass"]
             let index = Math.floor(Math.random() * 4)
             setTimeout(function () {
                 $(".fail-text").hide()
@@ -742,7 +744,7 @@ var Game = (function(){
                 $(".aword").attr("src", "bg/" + props[index] + ".png")
                 if(currentPoint % 5 == 0) {
                     let index2 = Math.floor(Math.random() * 4)
-                    $(".dialog-aword").append(`<img src="bg/${index2}.png"/> <img src="bg/add_one.png" />`)
+                    $(".dialog-aword").html(`<img src="bg/success-aword.png" /><img src="bg/${props2[index2]}.png"/> <img src="bg/add_one.png" />`)
                     that.saveAword(props[index2])
                 }
                 that.saveScore()
@@ -785,6 +787,10 @@ var Game = (function(){
             })
         },
         checkWinning: function () {
+            if(data.time == 0) {
+                this.over()
+                return 
+            }
             if (pointConfig.itemCount === 0) {
                 this.winning();
             } else {
