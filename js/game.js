@@ -384,13 +384,17 @@ var Game = (function(){
             this._update()
         },
         startCountDown: function () {
-            $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
+            let that = this
+            $(".current-time").stop().animate({width: '0px'}, data.time * 1000, 'linear', () => {
+                that.checkWinning()
+            })
         },
         _update: function () {
+            
+            this.checkWinning()
             if (data.time == 0 || win || frozen || pause) {
                 return
             }
-            this.checkWinning()
             this.updateTime();
             window.requestAnimationFrame(this._update.bind(this));  
         },
@@ -742,7 +746,7 @@ var Game = (function(){
                     that.saveAword(props[index2])
                 }
                 that.saveScore()
-                that.saveAword(props[index])
+                // that.saveAword(props[index])
             }, 50);
         },
         
