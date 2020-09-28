@@ -15,8 +15,12 @@ var Game = (function(){
     var api = new Api()
     var storage = new MyStorage()
     var currentPoint = storage.getItem(global.CURRENT_POINT)
+    var winpoint = storage.getItem(global.WIN)
     if (undefined == currentPoint || null == currentPoint) {
         currentPoint = 1;
+    }
+    if(undefined == winpoint || null == winpoint) {
+        winpoint = 0
     }
     let pointConfig = {
         cell: ALLPOINTS.data[currentPoint - 1].cell,
@@ -385,14 +389,14 @@ var Game = (function(){
         },
         startCountDown: function () {
             let that = this
-            $(".current-time").stop().animate({width: '0px'}, data.time * 1000, 'linear', () => {
-                that.checkWinning()
-            })
+            // $(".current-time").stop().animate({width: '0px'}, data.time * 1000, function () {
+            //     that.checkWinning()
+            // })
+            $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
         },
         _update: function () {
             this.checkWinning()
             if (win || frozen || pause) {
-                console.log(win + "-" + frozen + "-" + pause)
                 return
             }
             this.updateTime();
@@ -724,6 +728,8 @@ var Game = (function(){
         },
         winning: function () {
             win = true
+            winpoint ++;
+            storage.setItem(global.WIN, winpoint)
             let that = this
             score += data.time * 20
             totalScoreShow += data.time * 20
@@ -742,7 +748,7 @@ var Game = (function(){
                 $(".dialog-score-result").text(totalScoreShow)
                 $(".main-dialog").show()
                 $(".aword").attr("src", "bg/" + props[index] + ".png")
-                if(currentPoint % 5 == 0) {
+                if(winpoint % 5 == 0) {
                     let index2 = Math.floor(Math.random() * 4)
                     $(".dialog-aword").html(`<img src="bg/success-aword.png" /><img src="bg/${props2[index2]}.png"/> <img src="bg/add_one.png" />`)
                     that.saveAword(props[index2])
@@ -756,6 +762,8 @@ var Game = (function(){
             if(storage.getItem("silence") == 'false') {
                 video.fail.play()
             }
+            winpoint = 0;
+            storage.setItem(global.WIN, 0)
             $(".current-time").stop()
             score = 0;
             $(".fail-text").show()
