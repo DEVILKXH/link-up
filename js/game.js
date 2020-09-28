@@ -384,10 +384,15 @@ var Game = (function(){
             this._update()
         },
         startCountDown: function () {
+            let that = this
+            // $(".current-time").stop().animate({width: '0px'}, data.time * 1000, function () {
+            //     that.checkWinning()
+            // })
             $(".current-time").stop().animate({width: '0px'}, data.time * 1000)
         },
         _update: function () {
             if (data.time == 0 || win || frozen || pause) {
+                this.checkWinning()
                 return
             }
             this.checkWinning()
@@ -478,7 +483,7 @@ var Game = (function(){
                 clickTime = timestamp
                 // data.time += 1
                 // this.view.updateTime(data.time)
-                this.startCountDown()
+                // this.startCountDown()
             } else {
                 continueClick = 0
                 clickTime = timestamp
