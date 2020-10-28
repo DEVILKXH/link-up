@@ -21,17 +21,27 @@ let User = (function () {
                 url: '/score/count',
                 data: JSON.stringify({openId: openId}),
                 success: function (response) {
-                    if (response.result > 3) {
+                    if(response.code != 200) {
                         alert({
                             title: '提示',
-                            content: '您今天的游戏次数已经用完，分享可增加次数',
+                            content: response.message,
                             doneText: '确定',
                         }).then(() => {
-                            window.location = '/game/index.html'    
+                            window.location = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzI2ODQ2NDgxMw==&scene=110#wechat_redirect'    
                         })
                     } else {
-                        if (true != type) {
-                            window.location = '/game/checkpoint.html'
+                        if (response.result > 3) {
+                            alert({
+                                title: '提示',
+                                content: '您今天的游戏次数已经用完，分享可增加次数',
+                                doneText: '确定',
+                            }).then(() => {
+                                window.location = '/game/index.html'    
+                            })
+                        } else {
+                            if (true != type) {
+                                window.location = '/game/checkpoint.html'
+                            }
                         }
                     }
                 }

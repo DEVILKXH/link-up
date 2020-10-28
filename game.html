@@ -5,6 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-control" content="no-cache">
+  <meta http-equiv="Cache" content="no-cache">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dialog.css">
   <title>连连看</title>
@@ -341,6 +346,25 @@
                 signature: response.result.sign,// 必填，签名
                 jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', ,'onMenuShareAppMessage', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表
             });
+
+            wx.ready(function () {
+                let that = this
+                var currentPoint = storage.getItem(global.CURRENT_POINT)
+                let shareData = { 
+                    title: '品牌连连看', // 分享标题
+                    desc: '我正在“品牌连连看”打擂第'+ currentPoint +'关，帮我助力复活赢戴森吹风机，！', // 分享描述
+                    link: window.origin + '/game/share.html?propType=GAME&openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: window.origin + '/game/bg/logo.jpg', // 分享图标
+                    success: function () {
+                        // that.updateProp()
+                        console.log({content: '分享成功'})
+                    }
+                }
+                wx.updateAppMessageShareData(shareData) 
+                wx.onMenuShareAppMessage(shareData)
+                wx.updateTimelineShareData(shareData)
+                wx.onMenuShareQZone(shareData)
+            })
         }
     })
 </script>

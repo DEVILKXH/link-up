@@ -5,6 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-control" content="no-cache">
+  <meta http-equiv="Cache" content="no-cache">
   <title>连连看</title>
   <link rel="stylesheet" href="css/index.css">
   <style>
@@ -97,6 +102,10 @@
         data: window.location.href,
         success: function (response) {
             let openId = storage.getItem(global.OPENID)
+            var currentPoint = storage.getItem(global.CURRENT_POINT)
+            if (undefined == currentPoint || null == currentPoint) {
+                currentPoint = 1;
+            }
             wx.config({
                 debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                 appId: 'wxd21cf43aa834218f', // 必填，公众号的唯一标识
@@ -108,36 +117,38 @@
 
             wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
               wx.updateAppMessageShareData({ 
-                  title: '一起连连看', // 分享标题
-                  desc: '快来一起连连看吧', // 分享描述
+                  title: '品牌连连看', // 分享标题
+                  desc: '我正在“品牌连连看”打擂第'+ currentPoint +'关，帮我助力复活赢戴森吹风机，！', // 分享描述
                   link: window.origin + '/game/share.html?propType=GAME&openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                  imgUrl: window.origin + '/game/img/0.png', // 分享图标
+                  imgUrl: window.origin + '/game/bg/logo.jpg', // 分享图标
                   success: function () {
                       // alert({content: '分享成功'})
                   }
               })
               wx.onMenuShareAppMessage({ 
-                  title: '一起连连看', // 分享标题
-                  desc: '快来一起连连看吧', // 分享描述
+                  title: '品牌连连看', // 分享标题
+                  desc: '我正在“品牌连连看”打擂第'+ currentPoint +'关，帮我助力复活赢戴森吹风机，！', // 分享描述
                   link: window.origin + '/game/share.html?propType=GAME&openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                  imgUrl: window.origin + '/game/img/0.png', // 分享图标
+                  imgUrl: window.origin + '/game/bg/logo.jpg', // 分享图标
                   success: function () {
                       // alert({content: '分享成功'})
                   }
               })
               wx.updateTimelineShareData({ 
-                  title: '一起连连看', // 分享标题
+                  title: '品牌连连看', // 分享标题
+                  desc: '我正在“品牌连连看”打擂第'+ currentPoint +'关，帮我助力复活赢戴森吹风机，！', // 分享描述
                   link: window.origin + '/game/share.html?propType=GAME&openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                  imgUrl: window.origin + '/game/img/0.png', // 分享图标
+                  imgUrl: window.origin + '/game/bg/logo.jpg', // 分享图标
                   success: function () {
                       // 设置成功
                       // alert({content: '分享成功'})
                   }
               })
               wx.onMenuShareQZone({ 
-                  title: '一起连连看', // 分享标题
+                 title: '品牌连连看', // 分享标题
+                  desc: '我正在“品牌连连看”打擂第'+ currentPoint +'关，帮我助力复活赢戴森吹风机，！', // 分享描述
                   link: window.origin + '/game/share.html?propType=GAME&openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                  imgUrl: window.origin + '/game/img/0.png', // 分享图标
+                  imgUrl: window.origin + '/game/bg/logo.jpg', // 分享图标
                   success: function () {
                       // 设置成功
                       // alert({content: '分享成功'})

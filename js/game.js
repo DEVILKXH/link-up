@@ -136,10 +136,10 @@ var Game = (function(){
         share: function () {
             let that = this
             let shareData = { 
-                title: '一起连连看', // 分享标题
-                desc: '快来一起连连看吧', // 分享描述
+                title: '品牌连连看', // 分享标题
+                desc: '我正在“品牌连连看”打擂第'+ currentPoint +'关，帮我助力复活赢戴森吹风机，！', // 分享描述
                 link: window.origin + '/game/share.html?propType='+ propType +'&openId=' + openId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: window.origin + '/game/img/0.png', // 分享图标
+                imgUrl: window.origin + '/game/bg/logo.jpg', // 分享图标
                 success: function () {
                     // that.updateProp()
                     console.log({content: '分享成功'})
